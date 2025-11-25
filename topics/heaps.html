@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heaps - Ultimate DSA</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="../index.html" class="back-link">← Back to Home</a>
+            <h1>⛰️ Heaps</h1>
+            <p>Efficient priority queue implementation</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>What is a Heap?</h2>
+            <p>
+                A heap is a specialized tree-based data structure that satisfies the heap property. In a max heap, 
+                parent nodes are always greater than or equal to children. In a min heap, parents are always smaller.
+            </p>
+            
+            <h3>Min Heap Implementation</h3>
+            <pre><code>class MinHeap {
+    constructor() {
+        this.heap = [];
+    }
+    
+    insert(val) {
+        this.heap.push(val);
+        this.bubbleUp(this.heap.length - 1);
+    }
+    
+    extractMin() {
+        if (this.heap.length === 0) return null;
+        if (this.heap.length === 1) return this.heap.pop();
+        
+        const min = this.heap[0];
+        this.heap[0] = this.heap.pop();
+        this.bubbleDown(0);
+        return min;
+    }
+    
+    bubbleUp(index) {
+        while (index > 0) {
+            const parentIndex = Math.floor((index - 1) / 2);
+            if (this.heap[parentIndex] <= this.heap[index]) break;
+            
+            [this.heap[parentIndex], this.heap[index]] = 
+            [this.heap[index], this.heap[parentIndex]];
+            index = parentIndex;
+        }
+    }
+    
+    bubbleDown(index) {
+        while (true) {
+            let smallest = index;
+            const left = 2 * index + 1;
+            const right = 2 * index + 2;
+            
+            if (left < this.heap.length && 
+                this.heap[left] < this.heap[smallest]) {
+                smallest = left;
+            }
+            
+            if (right < this.heap.length && 
+                this.heap[right] < this.heap[smallest]) {
+                smallest = right;
+            }
+            
+            if (smallest === index) break;
+            
+            [this.heap[index], this.heap[smallest]] = 
+            [this.heap[smallest], this.heap[index]];
+            index = smallest;
+        }
+    }
+    
+    peek() {
+        return this.heap[0];
+    }
+}</code></pre>
+            <div class="code-explanation">
+                <h4>Heap mechanics</h4>
+                <ul>
+                    <li>The heap lives in an array so parents/children can be computed with index math.</li>
+                    <li><code>insert</code> appends the value and <code>bubbleUp</code> restores the min-heap property by swapping toward the root.</li>
+                    <li><code>extractMin</code> swaps the root with the last element, pops it, and <code>bubbleDown</code> pushes the new root to its proper place.</li>
+                    <li><code>peek</code> gives O(1) access to the smallest value without restructuring the heap.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>💻 Practice Problems</h2>
+            
+            <div class="problem">
+                <h4>1. Kth Largest Element <span class="difficulty medium">Medium</span></h4>
+                <p style="margin: 0.5rem 0;">
+                    Find the kth largest element in an unsorted array using a min heap.
+                </p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution1')">Show Solution</button>
+                
+                <div id="solution1" class="solution">
+                    <pre><code>function findKthLargest(nums, k) {
+    const minHeap = new MinHeap();
+    
+    for (let num of nums) {
+        minHeap.insert(num);
+        if (minHeap.size() > k) {
+            minHeap.extractMin();
+        }
+    }
+    
+    return minHeap.peek();
+}</code></pre>
+                    <div class="code-explanation">
+                        <h4>Idea in plain English</h4>
+                        <ul>
+                            <li>We maintain a min heap of size at most <code>k</code> that stores the largest numbers seen so far.</li>
+                            <li>Whenever the heap grows beyond <code>k</code>, we eject the smallest element—ensuring only the top k remain.</li>
+                            <li>After processing the array, the heap root is the kth largest because exactly k values are bigger or equal.</li>
+                            <li>This beats sorting the entire array (O(n log n)) when k is much smaller than n.</li>
+                        </ul>
+                    </div>
+                    <div class="complexity">
+                        <strong>Time:</strong> O(n log k) | <strong>Space:</strong> O(k)
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem">
+                <h4>2. Merge K Sorted Lists <span class="difficulty hard">Hard</span></h4>
+                <p style="margin: 0.5rem 0;">
+                    Merge k sorted linked lists using a min heap.
+                </p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution2')">Show Solution</button>
+                
+                <div id="solution2" class="solution">
+                    <pre><code>function mergeKLists(lists) {
+    const minHeap = new MinHeap((a, b) => a.val - b.val);
+    
+    // Add first node of each list to heap
+    for (let list of lists) {
+        if (list) minHeap.insert(list);
+    }
+    
+    const dummy = new ListNode(0);
+    let current = dummy;
+    
+    while (minHeap.size() > 0) {
+        const node = minHeap.extractMin();
+        current.next = node;
+        current = current.next;
+        
+        if (node.next) {
+            minHeap.insert(node.next);
+        }
+    }
+    
+    return dummy.next;
+}</code></pre>
+                    <div class="code-explanation">
+                        <h4>Why the heap helps</h4>
+                        <ul>
+                            <li>The heap always exposes the smallest current node among the k list heads.</li>
+                            <li>After we append that node to the output list, we push its successor (if any) back into the heap.</li>
+                            <li>This maintains at most k items in the heap, so every extraction takes O(log k).</li>
+                            <li>The dummy head simplifies returning the merged list without special cases.</li>
+                        </ul>
+                    </div>
+                    <div class="complexity">
+                        <strong>Time:</strong> O(n log k) | <strong>Space:</strong> O(k)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📚 Key Takeaways</h2>
+            <ul style="margin: 1rem 0; padding-left: 2rem; color: var(--text-secondary);">
+                <li>Heaps provide O(log n) insert and extract operations</li>
+                <li>Perfect for implementing priority queues</li>
+                <li>Min heap keeps smallest element at root, max heap keeps largest</li>
+                <li>Array representation: parent at i, children at 2i+1 and 2i+2</li>
+                <li>Used in algorithms like Dijkstra's and heap sort</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>Built with ❤️ by <a href="https://x.com/realimamabubakr" target="_blank">Imam Abubakar</a> | <a href="../index.html">Back to Home</a> | <a href="http://github.com/Imam-Abubakar/ultimate-dsa" target="_blank">GitHub</a></p>
+    </footer>
+
+    <script>
+        function toggleSolution(id) {
+            const solution = document.getElementById(id);
+            const button = event.target;
+            
+            if (solution.classList.contains('show')) {
+                solution.classList.remove('show');
+                button.textContent = 'Show Solution';
+            } else {
+                solution.classList.add('show');
+                button.textContent = 'Hide Solution';
+            }
+        }
+    </script>
+</body>
+</html>
+

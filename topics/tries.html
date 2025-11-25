@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tries - Ultimate DSA</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="../index.html" class="back-link">← Back to Home</a>
+            <h1>🌲 Tries (Prefix Trees)</h1>
+            <p>Efficient string storage and retrieval</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>What is a Trie?</h2>
+            <p>
+                A trie is a tree-like data structure for storing strings. Each path from root to leaf represents a word. 
+                Excellent for prefix matching and autocomplete.
+            </p>
+
+            <h3>Implementation</h3>
+            <pre><code>class TrieNode {
+    constructor() {
+        this.children = {};
+        this.isEndOfWord = false;
+    }
+}
+
+class Trie {
+    constructor() {
+        this.root = new TrieNode();
+    }
+    
+    insert(word) {
+        let node = this.root;
+        
+        for (let char of word) {
+            if (!node.children[char]) {
+                node.children[char] = new TrieNode();
+            }
+            node = node.children[char];
+        }
+        
+        node.isEndOfWord = true;
+    }
+    
+    search(word) {
+        let node = this.root;
+        
+        for (let char of word) {
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+        
+        return node.isEndOfWord;
+    }
+    
+    startsWith(prefix) {
+        let node = this.root;
+        
+        for (let char of prefix) {
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+        
+        return true;
+    }
+}
+
+// Usage
+const trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple"));   // true
+console.log(trie.search("app"));     // false
+console.log(trie.startsWith("app")); // true</code></pre>
+            <div class="code-explanation">
+                <h4>Walking through the code</h4>
+                <ul>
+                    <li>Each <code>TrieNode</code> holds a map of children keyed by character plus a flag for word endings.</li>
+                    <li><code>insert</code> walks character by character, creating nodes as needed, and marks the final node as a word.</li>
+                    <li><code>search</code> follows the same path but only returns true if the final node is flagged as the end of a word.</li>
+                    <li><code>startsWith</code> simply checks that every prefix character exists—it doesn’t require <code>isEndOfWord</code>.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>💻 Practice Problems</h2>
+            
+            <div class="problem">
+                <h4>1. Implement Trie (Prefix Tree) <span class="difficulty medium">Medium</span></h4>
+                <p style="margin: 0.5rem 0;">Implement insert, search, and startsWith methods.</p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution1')">Show Solution</button>
+                
+                <div id="solution1" class="solution">
+                    <p style="color: var(--text-secondary);">See the implementation above! ☝️</p>
+                    <div class="complexity">
+                        <strong>Time:</strong> O(m) for all operations, where m is key length
+                    </div>
+                    <div class="complexity">
+                        <strong>Space:</strong> O(n * m) where n is number of keys
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem">
+                <h4>2. Word Search II <span class="difficulty hard">Hard</span></h4>
+                <p style="margin: 0.5rem 0;">Find all words from a dictionary in a 2D board.</p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution2')">Show Solution</button>
+                
+                <div id="solution2" class="solution">
+                    <pre><code>function findWords(board, words) {
+    // Build trie from words
+    const trie = new Trie();
+    for (let word of words) {
+        trie.insert(word);
+    }
+    
+    const result = new Set();
+    const rows = board.length;
+    const cols = board[0].length;
+    
+    function dfs(i, j, node, word) {
+        if (i < 0 || i >= rows || j < 0 || j >= cols) return;
+        
+        const char = board[i][j];
+        if (char === '#' || !node.children[char]) return;
+        
+        node = node.children[char];
+        word += char;
+        
+        if (node.isEndOfWord) {
+            result.add(word);
+        }
+        
+        board[i][j] = '#'; // Mark visited
+        
+        dfs(i + 1, j, node, word);
+        dfs(i - 1, j, node, word);
+        dfs(i, j + 1, node, word);
+        dfs(i, j - 1, node, word);
+        
+        board[i][j] = char; // Restore
+    }
+    
+    for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+            dfs(i, j, trie.root, '');
+        }
+    }
+    
+    return Array.from(result);
+}</code></pre>
+                    <div class="code-explanation">
+                        <h4>Combining trie + DFS</h4>
+                        <ul>
+                            <li>We preload all dictionary words into a trie so we can test prefixes efficiently during the search.</li>
+                            <li>The DFS starts from every board cell, walking up/down/left/right while staying aligned with a trie path.</li>
+                            <li>Marking cells with <code>#</code> prevents revisiting them in the current path (backtracking restores them afterward).</li>
+                            <li>Whenever we reach a trie node with <code>isEndOfWord</code>, we add the accumulated word to the result set.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📚 Key Takeaways</h2>
+            <ul style="margin: 1rem 0; padding-left: 2rem; color: var(--text-secondary);">
+                <li>Tries excel at prefix-based operations</li>
+                <li>Used in autocomplete, spell checkers, IP routing</li>
+                <li>Trade space for time - fast lookups</li>
+                <li>All operations are O(m) where m is string length</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>Built with ❤️ by <a href="https://x.com/realimamabubakr" target="_blank">Imam Abubakar</a> | <a href="../index.html">Back to Home</a> | <a href="http://github.com/Imam-Abubakar/ultimate-dsa" target="_blank">GitHub</a></p>
+    </footer>
+
+    <script>
+        function toggleSolution(id) {
+            const solution = document.getElementById(id);
+            const button = event.target;
+            if (solution.classList.contains('show')) {
+                solution.classList.remove('show');
+                button.textContent = 'Show Solution';
+            } else {
+                solution.classList.add('show');
+                button.textContent = 'Hide Solution';
+            }
+        }
+    </script>
+</body>
+</html>
+

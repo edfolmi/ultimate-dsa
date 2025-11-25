@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linked Lists - Ultimate DSA</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .node-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .linked-node {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .node-box {
+            width: 70px;
+            height: 70px;
+            background: var(--primary-color);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .node-box:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.5);
+        }
+        
+        .node-pointer {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        
+        .arrow {
+            color: var(--accent-color);
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .node-box.head {
+            border-color: var(--success-color);
+            box-shadow: 0 0 10px var(--success-color);
+        }
+        
+        .node-box.tail {
+            border-color: var(--warning-color);
+            box-shadow: 0 0 10px var(--warning-color);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="../index.html" class="back-link">← Back to Home</a>
+            <h1>🔗 Linked Lists</h1>
+            <p>Dynamic data structure with efficient insertions and deletions</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Concept Explanation -->
+        <div class="card">
+            <h2>What is a Linked List?</h2>
+            <p>
+                A linked list is a linear data structure where elements (nodes) are not stored in contiguous memory 
+                locations. Each node contains data and a reference (pointer) to the next node in the sequence.
+            </p>
+            
+            <h3>Types of Linked Lists</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                <div style="padding: 1rem; background: var(--bg-light); border-radius: 8px;">
+                    <strong style="color: var(--primary-color);">Singly Linked List</strong>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
+                        Each node points to the next node only
+                    </p>
+                </div>
+                <div style="padding: 1rem; background: var(--bg-light); border-radius: 8px;">
+                    <strong style="color: var(--primary-color);">Doubly Linked List</strong>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
+                        Each node has pointers to both next and previous nodes
+                    </p>
+                </div>
+                <div style="padding: 1rem; background: var(--bg-light); border-radius: 8px;">
+                    <strong style="color: var(--primary-color);">Circular Linked List</strong>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
+                        Last node points back to the first node
+                    </p>
+                </div>
+            </div>
+
+            <h3>Time Complexity</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                <div class="complexity">
+                    <strong>Access:</strong> O(n)
+                </div>
+                <div class="complexity">
+                    <strong>Search:</strong> O(n)
+                </div>
+                <div class="complexity">
+                    <strong>Insert (at head):</strong> O(1)
+                </div>
+                <div class="complexity">
+                    <strong>Delete (at head):</strong> O(1)
+                </div>
+            </div>
+
+            <h3>Node Structure & Basic Operations</h3>
+            <pre><code>// Node class
+class ListNode {
+    constructor(val) {
+        this.val = val;
+        this.next = null;
+    }
+}
+
+// LinkedList class
+class LinkedList {
+    constructor() {
+        this.head = null;
+        this.size = 0;
+    }
+    
+    // Add node at beginning
+    addFirst(val) {
+        const newNode = new ListNode(val);
+        newNode.next = this.head;
+        this.head = newNode;
+        this.size++;
+    }
+    
+    // Add node at end
+    addLast(val) {
+        const newNode = new ListNode(val);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+        this.size++;
+    }
+    
+    // Remove first node
+    removeFirst() {
+        if (!this.head) return null;
+        const removed = this.head.val;
+        this.head = this.head.next;
+        this.size--;
+        return removed;
+    }
+    
+    // Print list
+    print() {
+        let current = this.head;
+        const values = [];
+        while (current) {
+            values.push(current.val);
+            current = current.next;
+        }
+        return values.join(' -> ');
+    }
+}</code></pre>
+            <div class="code-explanation">
+                <h4>How to read this class</h4>
+                <ul>
+                    <li><code>ListNode</code> stores the payload and pointer, mirroring the textbook definition.</li>
+                    <li><code>addFirst</code> updates <code>head</code> in O(1) by prepending the new node.</li>
+                    <li><code>addLast</code> traverses until <code>current.next</code> is null, then appends the node to the tail.</li>
+                    <li><code>removeFirst</code> simply shifts the head pointer forward and returns the removed value.</li>
+                    <li><code>print</code> walks the list collecting values, which is useful for debugging and visualization.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Interactive Visualizer -->
+        <div class="card">
+            <h2>🎨 Interactive Linked List Visualizer</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                Visualize linked list operations in real-time
+            </p>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="addAtHead()">Add at Head</button>
+                <button class="btn btn-primary" onclick="addAtTail()">Add at Tail</button>
+                <button class="btn btn-secondary" onclick="removeHead()">Remove Head</button>
+                <button class="btn btn-secondary" onclick="searchNode()">Search</button>
+                <button class="btn btn-secondary" onclick="reverseList()">Reverse List</button>
+                <button class="btn btn-secondary" onclick="resetList()">Reset</button>
+            </div>
+
+            <div style="margin: 1rem 0;">
+                <input type="number" id="nodeInput" placeholder="Enter a value" style="width: 200px; display: inline-block;">
+            </div>
+
+            <div class="visualizer">
+                <div id="listCanvas" class="node-container"></div>
+            </div>
+
+            <div id="listInfo" style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                    <div>
+                        <strong style="color: var(--primary-color);">Size:</strong>
+                        <span id="listSize" style="color: var(--text-secondary);">0</span>
+                    </div>
+                    <div>
+                        <strong style="color: var(--success-color);">Head:</strong>
+                        <span id="listHead" style="color: var(--text-secondary);">null</span>
+                    </div>
+                    <div>
+                        <strong style="color: var(--warning-color);">Tail:</strong>
+                        <span id="listTail" style="color: var(--text-secondary);">null</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="operationLog" style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1rem; min-height: 60px;">
+                <strong style="color: var(--primary-color);">Operation Log:</strong>
+                <div id="logContent" style="color: var(--text-secondary); margin-top: 0.5rem;">
+                    Ready to perform operations...
+                </div>
+            </div>
+        </div>
+
+        <!-- LeetCode Style Problems -->
+        <div class="card">
+            <h2>💻 Practice Problems</h2>
+            
+            <!-- Problem 1: Reverse Linked List -->
+            <div class="problem">
+                <h4>1. Reverse Linked List <span class="difficulty easy">Easy</span></h4>
+                <p style="margin: 0.5rem 0;">
+                    Given the head of a singly linked list, reverse the list and return the reversed list.
+                </p>
+                <p style="margin: 0.5rem 0; font-size: 0.9rem; color: var(--text-secondary);">
+                    <strong>Example:</strong><br>
+                    Input: 1 -> 2 -> 3 -> 4 -> 5<br>
+                    Output: 5 -> 4 -> 3 -> 2 -> 1
+                </p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution1')">Show Solution</button>
+                
+                <div id="solution1" class="solution">
+                    <h4 style="color: var(--accent-color); margin-top: 1rem;">Solution (Iterative):</h4>
+                    <pre><code>/**
+ * Reverse Linked List - Iterative Approach
+ * @param {ListNode} head - Head of the linked list
+ * @return {ListNode} - Head of reversed list
+ */
+function reverseList(head) {
+    let prev = null;
+    let current = head;
+    
+    while (current !== null) {
+        // Save next node
+        const nextTemp = current.next;
+        
+        // Reverse the link
+        current.next = prev;
+        
+        // Move pointers forward
+        prev = current;
+        current = nextTemp;
+    }
+    
+    // prev is now the new head
+    return prev;
+}
+
+// Test the function
+const list = createList([1, 2, 3, 4, 5]);
+const reversed = reverseList(list);
+printList(reversed); // 5 -> 4 -> 3 -> 2 -> 1</code></pre>
+                    
+                    <h4 style="color: var(--accent-color);">Solution (Recursive):</h4>
+                    <pre><code>/**
+ * Reverse Linked List - Recursive Approach
+ * @param {ListNode} head - Head of the linked list
+ * @return {ListNode} - Head of reversed list
+ */
+function reverseListRecursive(head) {
+    // Base case: empty list or single node
+    if (head === null || head.next === null) {
+        return head;
+    }
+    
+    // Recursively reverse the rest of the list
+    const newHead = reverseListRecursive(head.next);
+    
+    // Reverse the link between current and next node
+    head.next.next = head;
+    head.next = null;
+    
+    return newHead;
+}</code></pre>
+                    
+                    <h4 style="color: var(--accent-color);">Explanation:</h4>
+                    <p style="color: var(--text-secondary);">
+                        <strong>Iterative:</strong><br>
+                        1. Keep track of previous, current, and next nodes<br>
+                        2. Reverse the link by pointing current.next to prev<br>
+                        3. Move all pointers one step forward<br>
+                        4. Continue until current becomes null<br><br>
+                        
+                        <strong>Recursive:</strong><br>
+                        1. Recursively reverse the list starting from the second node<br>
+                        2. Reverse the link between current and next node<br>
+                        3. Set current.next to null (now it's the tail)<br>
+                        4. Return the new head
+                    </p>
+                    
+                    <div class="complexity">
+                        <strong>Time Complexity:</strong> O(n) - Visit each node once
+                    </div>
+                    <div class="complexity">
+                        <strong>Space Complexity:</strong> O(1) iterative, O(n) recursive (call stack)
+                    </div>
+                </div>
+            </div>
+
+            <!-- Problem 2: Detect Cycle -->
+            <div class="problem">
+                <h4>2. Linked List Cycle (Floyd's Algorithm) <span class="difficulty easy">Easy</span></h4>
+                <p style="margin: 0.5rem 0;">
+                    Given head of a linked list, determine if the linked list has a cycle in it.
+                </p>
+                <p style="margin: 0.5rem 0; font-size: 0.9rem; color: var(--text-secondary);">
+                    <strong>Example:</strong><br>
+                    Input: 3 -> 2 -> 0 -> -4 (where -4 points back to node with value 2)<br>
+                    Output: true (there is a cycle)
+                </p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution2')">Show Solution</button>
+                
+                <div id="solution2" class="solution">
+                    <h4 style="color: var(--accent-color); margin-top: 1rem;">Solution:</h4>
+                    <pre><code>/**
+ * Detect Cycle - Floyd's Tortoise and Hare Algorithm
+ * @param {ListNode} head - Head of the linked list
+ * @return {boolean} - True if cycle exists, false otherwise
+ */
+function hasCycle(head) {
+    // Handle empty list or single node
+    if (head === null || head.next === null) {
+        return false;
+    }
+    
+    // Initialize slow and fast pointers
+    let slow = head;
+    let fast = head;
+    
+    // Move slow by 1, fast by 2
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next;
+        fast = fast.next.next;
+        
+        // If they meet, there's a cycle
+        if (slow === fast) {
+            return true;
+        }
+    }
+    
+    // Fast reached end, no cycle
+    return false;
+}
+
+/**
+ * Find the start of the cycle (bonus!)
+ * @param {ListNode} head
+ * @return {ListNode} - Node where cycle begins, or null
+ */
+function detectCycle(head) {
+    if (head === null || head.next === null) {
+        return null;
+    }
+    
+    let slow = head;
+    let fast = head;
+    let hasCycle = false;
+    
+    // Detect cycle
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next;
+        fast = fast.next.next;
+        
+        if (slow === fast) {
+            hasCycle = true;
+            break;
+        }
+    }
+    
+    if (!hasCycle) return null;
+    
+    // Find cycle start: reset slow to head
+    slow = head;
+    while (slow !== fast) {
+        slow = slow.next;
+        fast = fast.next;
+    }
+    
+    return slow; // The cycle start node
+}</code></pre>
+                    
+                    <h4 style="color: var(--accent-color);">Explanation:</h4>
+                    <p style="color: var(--text-secondary);">
+                        Floyd's Cycle Detection Algorithm (Tortoise and Hare):<br>
+                        1. Use two pointers: slow (moves 1 step) and fast (moves 2 steps)<br>
+                        2. If there's a cycle, fast will eventually catch up to slow<br>
+                        3. If fast reaches null, there's no cycle<br><br>
+                        
+                        <strong>Why it works:</strong> In a cycle, the faster pointer will lap the slower one. 
+                        The relative speed is 1 node per iteration, so they must meet.
+                    </p>
+                    
+                    <div class="complexity">
+                        <strong>Time Complexity:</strong> O(n) - At most 2n iterations
+                    </div>
+                    <div class="complexity">
+                        <strong>Space Complexity:</strong> O(1) - Only two pointers
+                    </div>
+                </div>
+            </div>
+
+            <!-- Problem 3: Merge Two Sorted Lists -->
+            <div class="problem">
+                <h4>3. Merge Two Sorted Lists <span class="difficulty easy">Easy</span></h4>
+                <p style="margin: 0.5rem 0;">
+                    Merge two sorted linked lists and return it as a sorted list.
+                </p>
+                <p style="margin: 0.5rem 0; font-size: 0.9rem; color: var(--text-secondary);">
+                    <strong>Example:</strong><br>
+                    Input: list1 = 1->2->4, list2 = 1->3->4<br>
+                    Output: 1->1->2->3->4->4
+                </p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution3')">Show Solution</button>
+                
+                <div id="solution3" class="solution">
+                    <h4 style="color: var(--accent-color); margin-top: 1rem;">Solution:</h4>
+                    <pre><code>/**
+ * Merge Two Sorted Lists
+ * @param {ListNode} list1 - Head of first sorted list
+ * @param {ListNode} list2 - Head of second sorted list
+ * @return {ListNode} - Head of merged sorted list
+ */
+function mergeTwoLists(list1, list2) {
+    // Create a dummy node to simplify logic
+    const dummy = new ListNode(0);
+    let current = dummy;
+    
+    // Traverse both lists
+    while (list1 !== null && list2 !== null) {
+        if (list1.val <= list2.val) {
+            current.next = list1;
+            list1 = list1.next;
+        } else {
+            current.next = list2;
+            list2 = list2.next;
+        }
+        current = current.next;
+    }
+    
+    // Attach remaining nodes
+    if (list1 !== null) {
+        current.next = list1;
+    }
+    if (list2 !== null) {
+        current.next = list2;
+    }
+    
+    return dummy.next;
+}
+
+// Recursive solution
+function mergeTwoListsRecursive(list1, list2) {
+    // Base cases
+    if (list1 === null) return list2;
+    if (list2 === null) return list1;
+    
+    // Choose smaller node and recursively merge rest
+    if (list1.val <= list2.val) {
+        list1.next = mergeTwoListsRecursive(list1.next, list2);
+        return list1;
+    } else {
+        list2.next = mergeTwoListsRecursive(list1, list2.next);
+        return list2;
+    }
+}</code></pre>
+                    
+                    <h4 style="color: var(--accent-color);">Explanation:</h4>
+                    <p style="color: var(--text-secondary);">
+                        <strong>Iterative:</strong><br>
+                        1. Use a dummy node to simplify edge cases<br>
+                        2. Compare values from both lists and attach smaller node<br>
+                        3. Move pointer in the list from which node was taken<br>
+                        4. Attach remaining nodes when one list is exhausted<br><br>
+                        
+                        <strong>Recursive:</strong><br>
+                        1. Base cases: if one list is null, return the other<br>
+                        2. Choose the smaller head and recursively merge remaining lists<br>
+                        3. Return the smaller head
+                    </p>
+                    
+                    <div class="complexity">
+                        <strong>Time Complexity:</strong> O(n + m) - Visit all nodes once
+                    </div>
+                    <div class="complexity">
+                        <strong>Space Complexity:</strong> O(1) iterative, O(n + m) recursive
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="card">
+            <h2>📚 Key Takeaways</h2>
+            <ul style="margin: 1rem 0; padding-left: 2rem; color: var(--text-secondary);">
+                <li>Linked lists excel at insertions/deletions but are slower for random access</li>
+                <li>Floyd's cycle detection (slow/fast pointers) is a common pattern</li>
+                <li>Dummy nodes simplify linked list manipulation code</li>
+                <li>Many linked list problems can be solved both iteratively and recursively</li>
+                <li>Two-pointer technique is powerful for linked list problems</li>
+                <li>Always check for null pointers to avoid errors</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>Built with ❤️ by <a href="https://x.com/realimamabubakr" target="_blank">Imam Abubakar</a> | <a href="../index.html">Back to Home</a> | <a href="http://github.com/Imam-Abubakar/ultimate-dsa" target="_blank">GitHub</a></p>
+    </footer>
+
+    <script>
+        // ListNode class
+        class ListNode {
+            constructor(val) {
+                this.val = val;
+                this.next = null;
+            }
+        }
+
+        // LinkedList implementation
+        class LinkedList {
+            constructor() {
+                this.head = null;
+                this.size = 0;
+            }
+            
+            addFirst(val) {
+                const newNode = new ListNode(val);
+                newNode.next = this.head;
+                this.head = newNode;
+                this.size++;
+            }
+            
+            addLast(val) {
+                const newNode = new ListNode(val);
+                if (!this.head) {
+                    this.head = newNode;
+                } else {
+                    let current = this.head;
+                    while (current.next) {
+                        current = current.next;
+                    }
+                    current.next = newNode;
+                }
+                this.size++;
+            }
+            
+            removeFirst() {
+                if (!this.head) return null;
+                const removed = this.head.val;
+                this.head = this.head.next;
+                this.size--;
+                return removed;
+            }
+            
+            search(val) {
+                let current = this.head;
+                let index = 0;
+                while (current) {
+                    if (current.val === val) return index;
+                    current = current.next;
+                    index++;
+                }
+                return -1;
+            }
+            
+            reverse() {
+                let prev = null;
+                let current = this.head;
+                
+                while (current) {
+                    const nextTemp = current.next;
+                    current.next = prev;
+                    prev = current;
+                    current = nextTemp;
+                }
+                
+                this.head = prev;
+            }
+            
+            getTail() {
+                if (!this.head) return null;
+                let current = this.head;
+                while (current.next) {
+                    current = current.next;
+                }
+                return current.val;
+            }
+        }
+
+        // Initialize list
+        let list = new LinkedList();
+        list.addLast(5);
+        list.addLast(10);
+        list.addLast(15);
+
+        function renderList() {
+            const canvas = document.getElementById('listCanvas');
+            canvas.innerHTML = '';
+            
+            if (!list.head) {
+                canvas.innerHTML = '<div style="color: var(--text-secondary);">List is empty</div>';
+                updateInfo();
+                return;
+            }
+            
+            let current = list.head;
+            let index = 0;
+            
+            while (current) {
+                const linkedNode = document.createElement('div');
+                linkedNode.className = 'linked-node animate-in';
+                linkedNode.style.animationDelay = `${index * 0.1}s`;
+                
+                const nodeBox = document.createElement('div');
+                nodeBox.className = 'node-box';
+                if (index === 0) nodeBox.classList.add('head');
+                if (!current.next) nodeBox.classList.add('tail');
+                nodeBox.innerHTML = `
+                    <div>${current.val}</div>
+                    <div class="node-pointer">${!current.next ? 'null' : 'next'}</div>
+                `;
+                
+                linkedNode.appendChild(nodeBox);
+                
+                if (current.next) {
+                    const arrow = document.createElement('div');
+                    arrow.className = 'arrow';
+                    arrow.textContent = '→';
+                    linkedNode.appendChild(arrow);
+                }
+                
+                canvas.appendChild(linkedNode);
+                current = current.next;
+                index++;
+            }
+            
+            updateInfo();
+        }
+        
+        function updateInfo() {
+            document.getElementById('listSize').textContent = list.size;
+            document.getElementById('listHead').textContent = list.head ? list.head.val : 'null';
+            document.getElementById('listTail').textContent = list.getTail() !== null ? list.getTail() : 'null';
+        }
+        
+        function logOperation(message) {
+            const logContent = document.getElementById('logContent');
+            const timestamp = new Date().toLocaleTimeString();
+            logContent.innerHTML = `[${timestamp}] ${message}`;
+        }
+        
+        function addAtHead() {
+            const input = document.getElementById('nodeInput');
+            const value = parseInt(input.value) || Math.floor(Math.random() * 100);
+            list.addFirst(value);
+            renderList();
+            logOperation(`Added ${value} at head. List size: ${list.size}`);
+            input.value = '';
+        }
+        
+        function addAtTail() {
+            const input = document.getElementById('nodeInput');
+            const value = parseInt(input.value) || Math.floor(Math.random() * 100);
+            list.addLast(value);
+            renderList();
+            logOperation(`Added ${value} at tail. List size: ${list.size}`);
+            input.value = '';
+        }
+        
+        function removeHead() {
+            const removed = list.removeFirst();
+            if (removed !== null) {
+                renderList();
+                logOperation(`Removed ${removed} from head. List size: ${list.size}`);
+            } else {
+                logOperation('List is empty! Cannot remove.');
+            }
+        }
+        
+        function searchNode() {
+            const input = document.getElementById('nodeInput');
+            const value = parseInt(input.value);
+            
+            if (isNaN(value)) {
+                logOperation('Please enter a valid number to search.');
+                return;
+            }
+            
+            const index = list.search(value);
+            if (index !== -1) {
+                logOperation(`Found ${value} at position ${index}! ✓`);
+            } else {
+                logOperation(`Value ${value} not found in list. ✗`);
+            }
+            input.value = '';
+        }
+        
+        async function reverseList() {
+            if (list.size === 0) {
+                logOperation('List is empty! Cannot reverse.');
+                return;
+            }
+            
+            logOperation('Reversing list...');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            list.reverse();
+            renderList();
+            logOperation('List reversed successfully! ✓');
+        }
+        
+        function resetList() {
+            list = new LinkedList();
+            list.addLast(5);
+            list.addLast(10);
+            list.addLast(15);
+            renderList();
+            logOperation('List reset to initial state.');
+        }
+        
+        function toggleSolution(id) {
+            const solution = document.getElementById(id);
+            const button = event.target;
+            
+            if (solution.classList.contains('show')) {
+                solution.classList.remove('show');
+                button.textContent = 'Show Solution';
+            } else {
+                solution.classList.add('show');
+                button.textContent = 'Hide Solution';
+            }
+        }
+        
+        // Initialize
+        renderList();
+    </script>
+</body>
+</html>
+

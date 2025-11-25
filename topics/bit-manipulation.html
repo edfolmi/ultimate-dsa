@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bit Manipulation - Ultimate DSA</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="../index.html" class="back-link">← Back to Home</a>
+            <h1>⚙️ Bit Manipulation</h1>
+            <p>Working with bits efficiently</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>Bitwise Operations</h2>
+            <pre><code>// Basic operations
+const AND = 5 & 3;    // 0101 & 0011 = 0001 (1)
+const OR = 5 | 3;     // 0101 | 0011 = 0111 (7)
+const XOR = 5 ^ 3;    // 0101 ^ 0011 = 0110 (6)
+const NOT = ~5;       // ~0101 = 1010 (-6 in 2's complement)
+const LEFT = 5 << 1;  // 0101 << 1 = 1010 (10)
+const RIGHT = 5 >> 1; // 0101 >> 1 = 0010 (2)
+
+// Common tricks
+function isPowerOfTwo(n) {
+    return n > 0 && (n & (n - 1)) === 0;
+}
+
+function countSetBits(n) {
+    let count = 0;
+    while (n > 0) {
+        count += n & 1;
+        n >>= 1;
+    }
+    return count;
+}
+
+function getBit(n, i) {
+    return (n >> i) & 1;
+}
+
+function setBit(n, i) {
+    return n | (1 << i);
+}
+
+function clearBit(n, i) {
+    return n & ~(1 << i);
+}
+
+function toggleBit(n, i) {
+    return n ^ (1 << i);
+}</code></pre>
+            <div class="code-explanation">
+                <h4>Reading these samples</h4>
+                <ul>
+                    <li>The first six lines demonstrate how each bitwise operator transforms the binary representation.</li>
+                    <li><code>isPowerOfTwo</code> leverages the fact that powers of two have exactly one set bit, so <code>n & (n-1)</code> becomes zero only for those numbers.</li>
+                    <li>The helper functions (<code>getBit</code>, <code>setBit</code>, etc.) show how shifts and masks isolate or update a specific position.</li>
+                    <li>These patterns compose into most competitive-programming style bit tricks.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>💻 Practice Problems</h2>
+            
+            <div class="problem">
+                <h4>1. Single Number <span class="difficulty easy">Easy</span></h4>
+                <p style="margin: 0.5rem 0;">Find the number that appears once (all others appear twice).</p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution1')">Show Solution</button>
+                
+                <div id="solution1" class="solution">
+                    <pre><code>function singleNumber(nums) {
+    let result = 0;
+    for (let num of nums) {
+        result ^= num; // XOR cancels out duplicates
+    }
+    return result;
+}</code></pre>
+                    <div class="code-explanation">
+                        <h4>Why XOR solves it</h4>
+                        <ul>
+                            <li>XOR-ing a number with itself yields zero, so duplicate entries cancel out bit-by-bit.</li>
+                            <li>Zero XOR x equals x, so the lone number survives all cancellations.</li>
+                            <li>We can fold through the array in O(1) space because the intermediate XOR is all we need.</li>
+                            <li>No sorting or hash maps are required, keeping runtime linear.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem">
+                <h4>2. Number of 1 Bits <span class="difficulty easy">Easy</span></h4>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution2')">Show Solution</button>
+                
+                <div id="solution2" class="solution">
+                    <pre><code>function hammingWeight(n) {
+    let count = 0;
+    while (n !== 0) {
+        n &= (n - 1); // Removes rightmost 1
+        count++;
+    }
+    return count;
+}</code></pre>
+                    <div class="code-explanation">
+                        <h4>Step-by-step logic</h4>
+                        <ul>
+                            <li>The expression <code>n &= (n - 1)</code> knocks out the lowest set bit in each iteration.</li>
+                            <li>Counting how many times we can perform that operation equals the number of 1s.</li>
+                            <li>This is faster than checking every bit individually because it loops only over set bits.</li>
+                            <li>The loop ends when <code>n</code> becomes zero, meaning all bits were cleared.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📚 Key Takeaways</h2>
+            <ul style="margin: 1rem 0; padding-left: 2rem; color: var(--text-secondary);">
+                <li>XOR useful for finding unique elements</li>
+                <li>n & (n-1) removes rightmost set bit</li>
+                <li>Bit operations are very fast</li>
+                <li>Used in cryptography, compression, graphics</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>Built with ❤️ by <a href="https://x.com/realimamabubakr" target="_blank">Imam Abubakar</a> | <a href="../index.html">Back to Home</a> | <a href="http://github.com/Imam-Abubakar/ultimate-dsa" target="_blank">GitHub</a></p>
+    </footer>
+
+    <script>
+        function toggleSolution(id) {
+            const solution = document.getElementById(id);
+            const button = event.target;
+            if (solution.classList.contains('show')) {
+                solution.classList.remove('show');
+                button.textContent = 'Show Solution';
+            } else {
+                solution.classList.add('show');
+                button.textContent = 'Hide Solution';
+            }
+        }
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Searching Algorithms - Ultimate DSA</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="../index.html" class="back-link">← Back to Home</a>
+            <h1>🔍 Searching Algorithms</h1>
+            <p>Finding elements efficiently</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>Search Algorithms</h2>
+            
+            <h3>Binary Search</h3>
+            <pre><code>// Binary Search - O(log n)
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
+    
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
+        
+        if (arr[mid] === target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+    
+    return -1; // Not found
+}
+
+// Binary Search (Recursive)
+function binarySearchRecursive(arr, target, left = 0, right = arr.length - 1) {
+    if (left > right) return -1;
+    
+    const mid = Math.floor((left + right) / 2);
+    
+    if (arr[mid] === target) return mid;
+    if (arr[mid] < target) return binarySearchRecursive(arr, target, mid + 1, right);
+    return binarySearchRecursive(arr, target, left, mid - 1);
+}</code></pre>
+            <div class="code-explanation">
+                <h4>Key observations</h4>
+                <ul>
+                    <li>Because the array is sorted, we can discard half the search space each iteration.</li>
+                    <li>Comparing <code>arr[mid]</code> with the target tells us which half could still contain the answer.</li>
+                    <li>The recursive variant mirrors the iterative logic but expresses the shrinkage via function calls.</li>
+                    <li>Returning <code>-1</code> when the pointers cross signals that the target does not exist in the array.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>💻 Practice Problems</h2>
+            
+            <div class="problem">
+                <h4>1. Search in Rotated Sorted Array <span class="difficulty medium">Medium</span></h4>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution1')">Show Solution</button>
+                
+                <div id="solution1" class="solution">
+                    <pre><code>function search(nums, target) {
+    let left = 0, right = nums.length - 1;
+    
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
+        
+        if (nums[mid] === target) return mid;
+        
+        // Determine which half is sorted
+        if (nums[left] <= nums[mid]) {
+            // Left half is sorted
+            if (target >= nums[left] && target < nums[mid]) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        } else {
+            // Right half is sorted
+            if (target > nums[mid] && target <= nums[right]) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+    }
+    
+    return -1;
+}</code></pre>
+                    <div class="code-explanation">
+                        <h4>How the pivot logic works</h4>
+                        <ul>
+                            <li>At every step either the left half or the right half is still sorted (because only one rotation happened).</li>
+                            <li>We check which half is sorted by comparing the boundary values <code>nums[left]</code> and <code>nums[mid]</code>.</li>
+                            <li>If the target lies within the sorted half’s range, we search there; otherwise we explore the other half.</li>
+                            <li>This keeps the runtime logarithmic even though the array is rotated.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem">
+                <h4>2. Find Peak Element <span class="difficulty medium">Medium</span></h4>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution2')">Show Solution</button>
+                
+                <div id="solution2" class="solution">
+                    <pre><code>function findPeakElement(nums) {
+    let left = 0, right = nums.length - 1;
+    
+    while (left < right) {
+        const mid = Math.floor((left + right) / 2);
+        
+        if (nums[mid] > nums[mid + 1]) {
+            // Peak is on left side (or mid is peak)
+            right = mid;
+        } else {
+            // Peak is on right side
+            left = mid + 1;
+        }
+    }
+    
+    return left;
+}</code></pre>
+                    <div class="code-explanation">
+                        <h4>Binary search on gradients</h4>
+                        <ul>
+                            <li>Comparing <code>nums[mid]</code> with <code>nums[mid + 1]</code> tells us which side has an upward slope.</li>
+                            <li>If the slope goes down (<code>nums[mid] &gt; nums[mid+1]</code>), a peak must exist on the left including <code>mid</code>.</li>
+                            <li>If the slope goes up, the peak lies to the right; we move <code>left</code> forward.</li>
+                            <li>The loop stops when <code>left === right</code>, pinpointing a peak index without scanning linearly.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📚 Key Takeaways</h2>
+            <ul style="margin: 1rem 0; padding-left: 2rem; color: var(--text-secondary);">
+                <li>Binary search requires sorted data - O(log n) time</li>
+                <li>Modified binary search solves many problems efficiently</li>
+                <li>Think binary search when you see sorted or rotated arrays</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>Built with ❤️ by <a href="https://x.com/realimamabubakr" target="_blank">Imam Abubakar</a> | <a href="../index.html">Back to Home</a> | <a href="http://github.com/Imam-Abubakar/ultimate-dsa" target="_blank">GitHub</a></p>
+    </footer>
+
+    <script>
+        function toggleSolution(id) {
+            const solution = document.getElementById(id);
+            const button = event.target;
+            if (solution.classList.contains('show')) {
+                solution.classList.remove('show');
+                button.textContent = 'Show Solution';
+            } else {
+                solution.classList.add('show');
+                button.textContent = 'Hide Solution';
+            }
+        }
+    </script>
+</body>
+</html>
+

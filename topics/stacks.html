@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stacks - Ultimate DSA</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .stack-container {
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            gap: 5px;
+            min-height: 300px;
+            justify-content: flex-start;
+            padding: 20px;
+        }
+        
+        .stack-item {
+            width: 200px;
+            height: 50px;
+            background: var(--primary-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .stack-item.top {
+            border-color: var(--success-color);
+            box-shadow: 0 0 15px var(--success-color);
+        }
+        
+        .stack-item::after {
+            content: attr(data-index);
+            position: absolute;
+            right: -30px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        @keyframes pushAnimation {
+            0% {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes popAnimation {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+        }
+        
+        .pushing {
+            animation: pushAnimation 0.5s ease-out;
+        }
+        
+        .popping {
+            animation: popAnimation 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="../index.html" class="back-link">← Back to Home</a>
+            <h1>📚 Stacks</h1>
+            <p>Last In, First Out (LIFO) Data Structure</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Concept Explanation -->
+        <div class="card">
+            <h2>What is a Stack?</h2>
+            <p>
+                A stack is a linear data structure that follows the Last In, First Out (LIFO) principle. 
+                Think of it like a stack of plates - you can only add or remove plates from the top.
+            </p>
+            
+            <h3>Key Operations</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                <div style="padding: 1rem; background: var(--bg-light); border-radius: 8px;">
+                    <strong style="color: var(--primary-color);">Push</strong>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
+                        Add element to the top - O(1)
+                    </p>
+                </div>
+                <div style="padding: 1rem; background: var(--bg-light); border-radius: 8px;">
+                    <strong style="color: var(--primary-color);">Pop</strong>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
+                        Remove element from the top - O(1)
+                    </p>
+                </div>
+                <div style="padding: 1rem; background: var(--bg-light); border-radius: 8px;">
+                    <strong style="color: var(--primary-color);">Peek/Top</strong>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
+                        View top element without removing - O(1)
+                    </p>
+                </div>
+                <div style="padding: 1rem; background: var(--bg-light); border-radius: 8px;">
+                    <strong style="color: var(--primary-color);">isEmpty</strong>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
+                        Check if stack is empty - O(1)
+                    </p>
+                </div>
+            </div>
+
+            <h3>Real-World Applications</h3>
+            <ul style="margin: 1rem 0; padding-left: 2rem; color: var(--text-secondary);">
+                <li>Function call stack (recursion)</li>
+                <li>Undo/Redo operations in editors</li>
+                <li>Browser history (back button)</li>
+                <li>Expression evaluation and syntax parsing</li>
+                <li>Backtracking algorithms</li>
+            </ul>
+
+            <h3>Stack Implementation</h3>
+            <pre><code>// Stack class using array
+class Stack {
+    constructor() {
+        this.items = [];
+    }
+    
+    // Add element to top
+    push(element) {
+        this.items.push(element);
+    }
+    
+    // Remove and return top element
+    pop() {
+        if (this.isEmpty()) {
+            return null;
+        }
+        return this.items.pop();
+    }
+    
+    // View top element
+    peek() {
+        if (this.isEmpty()) {
+            return null;
+        }
+        return this.items[this.items.length - 1];
+    }
+    
+    // Check if stack is empty
+    isEmpty() {
+        return this.items.length === 0;
+    }
+    
+    // Get stack size
+    size() {
+        return this.items.length;
+    }
+    
+    // Clear stack
+    clear() {
+        this.items = [];
+    }
+    
+    // Print stack
+    print() {
+        return this.items.join(' <- ');
+    }
+}</code></pre>
+            <div class="code-explanation">
+                <h4>How the stack behaves</h4>
+                <ul>
+                    <li>The internal array stores elements with the top at the end, making <code>push</code>/<code>pop</code> O(1).</li>
+                    <li><code>peek</code> and <code>isEmpty</code> give constant-time visibility into the top element and size.</li>
+                    <li><code>size</code> and <code>clear</code> are convenience helpers for diagnostics.</li>
+                    <li><code>print</code> visualizes the stack from bottom to top, which is useful when debugging.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Interactive Visualizer -->
+        <div class="card">
+            <h2>🎨 Interactive Stack Visualizer</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                See LIFO in action with real-time animations
+            </p>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="pushStack()">Push</button>
+                <button class="btn btn-primary" onclick="popStack()">Pop</button>
+                <button class="btn btn-secondary" onclick="peekStack()">Peek</button>
+                <button class="btn btn-secondary" onclick="clearStack()">Clear</button>
+            </div>
+
+            <div style="margin: 1rem 0;">
+                <input type="text" id="stackInput" placeholder="Enter a value" style="width: 200px; display: inline-block;">
+            </div>
+
+            <div class="visualizer">
+                <div id="stackCanvas" class="stack-container"></div>
+                <div style="margin-top: 1rem; padding: 10px; background: var(--bg-light); border-radius: 8px;">
+                    <span style="color: var(--success-color);">↑ TOP</span>
+                </div>
+            </div>
+
+            <div id="stackInfo" style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                    <div>
+                        <strong style="color: var(--primary-color);">Size:</strong>
+                        <span id="stackSize" style="color: var(--text-secondary);">0</span>
+                    </div>
+                    <div>
+                        <strong style="color: var(--success-color);">Top:</strong>
+                        <span id="stackTop" style="color: var(--text-secondary);">empty</span>
+                    </div>
+                    <div>
+                        <strong style="color: var(--warning-color);">Is Empty:</strong>
+                        <span id="stackEmpty" style="color: var(--text-secondary);">true</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="operationLog" style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1rem; min-height: 60px;">
+                <strong style="color: var(--primary-color);">Operation Log:</strong>
+                <div id="logContent" style="color: var(--text-secondary); margin-top: 0.5rem;">
+                    Ready to perform stack operations...
+                </div>
+            </div>
+        </div>
+
+        <!-- LeetCode Style Problems -->
+        <div class="card">
+            <h2>💻 Practice Problems</h2>
+            
+            <!-- Problem 1: Valid Parentheses -->
+            <div class="problem">
+                <h4>1. Valid Parentheses <span class="difficulty easy">Easy</span></h4>
+                <p style="margin: 0.5rem 0;">
+                    Given a string containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+                    An input string is valid if brackets are closed in the correct order.
+                </p>
+                <p style="margin: 0.5rem 0; font-size: 0.9rem; color: var(--text-secondary);">
+                    <strong>Examples:</strong><br>
+                    Input: "()" → Output: true<br>
+                    Input: "()[]{}" → Output: true<br>
+                    Input: "(]" → Output: false<br>
+                    Input: "([)]" → Output: false
+                </p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution1')">Show Solution</button>
+                
+                <div id="solution1" class="solution">
+                    <h4 style="color: var(--accent-color); margin-top: 1rem;">Solution:</h4>
+                    <pre><code>/**
+ * Valid Parentheses - Using Stack
+ * @param {string} s - String containing brackets
+ * @return {boolean} - True if valid, false otherwise
+ */
+function isValid(s) {
+    const stack = [];
+    const pairs = {
+        ')': '(',
+        '}': '{',
+        ']': '['
+    };
+    
+    for (let char of s) {
+        // If closing bracket
+        if (char in pairs) {
+            // Check if stack is empty or top doesn't match
+            if (stack.length === 0 || stack.pop() !== pairs[char]) {
+                return false;
+            }
+        } else {
+            // Opening bracket - push to stack
+            stack.push(char);
+        }
+    }
+    
+    // Valid only if stack is empty (all brackets matched)
+    return stack.length === 0;
+}
+
+// Test cases
+console.log(isValid("()"));        // true
+console.log(isValid("()[]{}"));    // true
+console.log(isValid("(]"));        // false
+console.log(isValid("([)]"));      // false
+console.log(isValid("{[]}"));      // true</code></pre>
+                    
+                    <h4 style="color: var(--accent-color);">Explanation:</h4>
+                    <p style="color: var(--text-secondary);">
+                        1. Use a stack to keep track of opening brackets<br>
+                        2. When encountering opening bracket: push to stack<br>
+                        3. When encountering closing bracket: check if top of stack matches<br>
+                        4. If stack is empty or doesn't match, return false<br>
+                        5. At the end, stack should be empty for valid string
+                    </p>
+                    
+                    <div class="complexity">
+                        <strong>Time Complexity:</strong> O(n) - Single pass through string
+                    </div>
+                    <div class="complexity">
+                        <strong>Space Complexity:</strong> O(n) - Stack space in worst case
+                    </div>
+                </div>
+            </div>
+
+            <!-- Problem 2: Min Stack -->
+            <div class="problem">
+                <h4>2. Min Stack <span class="difficulty medium">Medium</span></h4>
+                <p style="margin: 0.5rem 0;">
+                    Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+                </p>
+                <p style="margin: 0.5rem 0; font-size: 0.9rem; color: var(--text-secondary);">
+                    <strong>Operations:</strong><br>
+                    push(val) - Push element onto stack<br>
+                    pop() - Remove element from top<br>
+                    top() - Get top element<br>
+                    getMin() - Retrieve minimum element (O(1))
+                </p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution2')">Show Solution</button>
+                
+                <div id="solution2" class="solution">
+                    <h4 style="color: var(--accent-color); margin-top: 1rem;">Solution:</h4>
+                    <pre><code>/**
+ * MinStack - Stack with O(1) minimum retrieval
+ */
+class MinStack {
+    constructor() {
+        this.stack = [];
+        this.minStack = []; // Tracks minimum values
+    }
+    
+    /**
+     * Push element onto stack
+     * @param {number} val
+     */
+    push(val) {
+        this.stack.push(val);
+        
+        // Update min stack
+        if (this.minStack.length === 0 || val <= this.getMin()) {
+            this.minStack.push(val);
+        }
+    }
+    
+    /**
+     * Remove element from top
+     */
+    pop() {
+        if (this.stack.length === 0) return;
+        
+        const popped = this.stack.pop();
+        
+        // If popped element was minimum, remove from min stack
+        if (popped === this.getMin()) {
+            this.minStack.pop();
+        }
+    }
+    
+    /**
+     * Get top element
+     * @return {number}
+     */
+    top() {
+        if (this.stack.length === 0) return null;
+        return this.stack[this.stack.length - 1];
+    }
+    
+    /**
+     * Get minimum element in O(1)
+     * @return {number}
+     */
+    getMin() {
+        if (this.minStack.length === 0) return null;
+        return this.minStack[this.minStack.length - 1];
+    }
+}
+
+// Usage example
+const minStack = new MinStack();
+minStack.push(-2);
+minStack.push(0);
+minStack.push(-3);
+console.log(minStack.getMin());  // -3
+minStack.pop();
+console.log(minStack.top());     // 0
+console.log(minStack.getMin());  // -2</code></pre>
+                    
+                    <h4 style="color: var(--accent-color);">Explanation:</h4>
+                    <p style="color: var(--text-secondary);">
+                        The key insight is using two stacks:<br>
+                        1. <strong>Main stack:</strong> stores all elements normally<br>
+                        2. <strong>Min stack:</strong> tracks minimum values<br>
+                        3. When pushing: add to min stack only if it's new minimum<br>
+                        4. When popping: remove from min stack if it was the minimum<br>
+                        5. getMin() just returns top of min stack - O(1)!
+                    </p>
+                    
+                    <div class="complexity">
+                        <strong>Time Complexity:</strong> O(1) for all operations
+                    </div>
+                    <div class="complexity">
+                        <strong>Space Complexity:</strong> O(n) - Two stacks
+                    </div>
+                </div>
+            </div>
+
+            <!-- Problem 3: Evaluate Reverse Polish Notation -->
+            <div class="problem">
+                <h4>3. Evaluate Reverse Polish Notation <span class="difficulty medium">Medium</span></h4>
+                <p style="margin: 0.5rem 0;">
+                    Evaluate the value of an arithmetic expression in Reverse Polish Notation (postfix).
+                </p>
+                <p style="margin: 0.5rem 0; font-size: 0.9rem; color: var(--text-secondary);">
+                    <strong>Examples:</strong><br>
+                    Input: ["2","1","+","3","*"] → Output: 9 (i.e., (2 + 1) * 3)<br>
+                    Input: ["4","13","5","/","+"] → Output: 6 (i.e., 4 + (13 / 5))
+                </p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution3')">Show Solution</button>
+                
+                <div id="solution3" class="solution">
+                    <h4 style="color: var(--accent-color); margin-top: 1rem;">Solution:</h4>
+                    <pre><code>/**
+ * Evaluate Reverse Polish Notation
+ * @param {string[]} tokens - Array of tokens
+ * @return {number} - Result of evaluation
+ */
+function evalRPN(tokens) {
+    const stack = [];
+    const operators = {
+        '+': (a, b) => a + b,
+        '-': (a, b) => a - b,
+        '*': (a, b) => a * b,
+        '/': (a, b) => Math.trunc(a / b) // Truncate toward zero
+    };
+    
+    for (let token of tokens) {
+        if (token in operators) {
+            // Pop two operands (note the order!)
+            const b = stack.pop();
+            const a = stack.pop();
+            
+            // Apply operator and push result
+            const result = operators[token](a, b);
+            stack.push(result);
+        } else {
+            // It's a number, push to stack
+            stack.push(parseInt(token));
+        }
+    }
+    
+    // Final result is on top of stack
+    return stack[0];
+}
+
+// Test cases
+console.log(evalRPN(["2","1","+","3","*"]));           // 9
+console.log(evalRPN(["4","13","5","/","+"]));          // 6
+console.log(evalRPN(["10","6","9","3","+","-11","*",
+                     "/","*","17","+","5","+"]));      // 22</code></pre>
+                    
+                    <h4 style="color: var(--accent-color);">Explanation:</h4>
+                    <p style="color: var(--text-secondary);">
+                        Reverse Polish Notation (RPN) is perfect for stack-based evaluation:<br>
+                        1. Scan tokens from left to right<br>
+                        2. If token is a number: push to stack<br>
+                        3. If token is operator: pop two operands, apply operator, push result<br>
+                        4. Final result is the only element left in stack<br><br>
+                        
+                        <strong>Why it works:</strong> In RPN, operators come after operands, 
+                        so when we encounter an operator, the operands are already on the stack!
+                    </p>
+                    
+                    <div class="complexity">
+                        <strong>Time Complexity:</strong> O(n) - Process each token once
+                    </div>
+                    <div class="complexity">
+                        <strong>Space Complexity:</strong> O(n) - Stack space
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="card">
+            <h2>📚 Key Takeaways</h2>
+            <ul style="margin: 1rem 0; padding-left: 2rem; color: var(--text-secondary);">
+                <li>Stacks are ideal for problems involving nested structures or backtracking</li>
+                <li>Perfect for bracket matching, expression evaluation, and parsing</li>
+                <li>All basic operations (push, pop, peek) are O(1)</li>
+                <li>Use auxiliary stacks for tracking additional information (like minimum)</li>
+                <li>Function call stack in programming languages is a stack!</li>
+                <li>Consider using stack when you need to reverse order or track previous states</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>Built with ❤️ by <a href="https://x.com/realimamabubakr" target="_blank">Imam Abubakar</a> | <a href="../index.html">Back to Home</a> | <a href="http://github.com/Imam-Abubakar/ultimate-dsa" target="_blank">GitHub</a></p>
+    </footer>
+
+    <script>
+        // Stack implementation
+        class Stack {
+            constructor() {
+                this.items = [];
+            }
+            
+            push(element) {
+                this.items.push(element);
+            }
+            
+            pop() {
+                if (this.isEmpty()) return null;
+                return this.items.pop();
+            }
+            
+            peek() {
+                if (this.isEmpty()) return null;
+                return this.items[this.items.length - 1];
+            }
+            
+            isEmpty() {
+                return this.items.length === 0;
+            }
+            
+            size() {
+                return this.items.length;
+            }
+            
+            clear() {
+                this.items = [];
+            }
+        }
+
+        let stack = new Stack();
+
+        function renderStack() {
+            const canvas = document.getElementById('stackCanvas');
+            canvas.innerHTML = '';
+            
+            if (stack.isEmpty()) {
+                canvas.innerHTML = '<div style="color: var(--text-secondary);">Stack is empty</div>';
+            } else {
+                for (let i = 0; i < stack.items.length; i++) {
+                    const item = document.createElement('div');
+                    item.className = 'stack-item';
+                    if (i === stack.items.length - 1) {
+                        item.classList.add('top');
+                    }
+                    item.textContent = stack.items[i];
+                    item.setAttribute('data-index', i);
+                    canvas.appendChild(item);
+                }
+            }
+            
+            updateInfo();
+        }
+        
+        function updateInfo() {
+            document.getElementById('stackSize').textContent = stack.size();
+            document.getElementById('stackTop').textContent = stack.peek() !== null ? stack.peek() : 'empty';
+            document.getElementById('stackEmpty').textContent = stack.isEmpty();
+        }
+        
+        function logOperation(message) {
+            const logContent = document.getElementById('logContent');
+            const timestamp = new Date().toLocaleTimeString();
+            logContent.innerHTML = `[${timestamp}] ${message}`;
+        }
+        
+        async function pushStack() {
+            const input = document.getElementById('stackInput');
+            const value = input.value.trim() || Math.floor(Math.random() * 100);
+            
+            stack.push(value);
+            
+            // Render with animation
+            renderStack();
+            const items = document.querySelectorAll('.stack-item');
+            if (items.length > 0) {
+                items[items.length - 1].classList.add('pushing');
+            }
+            
+            logOperation(`Pushed "${value}" onto stack. Size: ${stack.size()}`);
+            input.value = '';
+        }
+        
+        async function popStack() {
+            if (stack.isEmpty()) {
+                logOperation('Stack is empty! Cannot pop.');
+                return;
+            }
+            
+            const items = document.querySelectorAll('.stack-item');
+            if (items.length > 0) {
+                items[items.length - 1].classList.add('popping');
+            }
+            
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            const popped = stack.pop();
+            renderStack();
+            logOperation(`Popped "${popped}" from stack. Size: ${stack.size()}`);
+        }
+        
+        function peekStack() {
+            const top = stack.peek();
+            if (top !== null) {
+                logOperation(`Top element is "${top}"`);
+                const items = document.querySelectorAll('.stack-item');
+                if (items.length > 0) {
+                    items[items.length - 1].style.animation = 'pulse 1s';
+                    setTimeout(() => {
+                        items[items.length - 1].style.animation = '';
+                    }, 1000);
+                }
+            } else {
+                logOperation('Stack is empty!');
+            }
+        }
+        
+        function clearStack() {
+            stack.clear();
+            renderStack();
+            logOperation('Stack cleared.');
+        }
+        
+        function toggleSolution(id) {
+            const solution = document.getElementById(id);
+            const button = event.target;
+            
+            if (solution.classList.contains('show')) {
+                solution.classList.remove('show');
+                button.textContent = 'Show Solution';
+            } else {
+                solution.classList.add('show');
+                button.textContent = 'Hide Solution';
+            }
+        }
+        
+        // Initialize
+        renderStack();
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hash Tables - Ultimate DSA</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .hash-table {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            padding: 20px;
+        }
+        
+        .hash-bucket {
+            background: var(--bg-light);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+            min-height: 100px;
+        }
+        
+        .bucket-index {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        
+        .hash-entry {
+            background: var(--primary-color);
+            padding: 8px;
+            border-radius: 4px;
+            margin: 5px 0;
+            font-size: 0.9rem;
+            word-break: break-word;
+        }
+        
+        .hash-entry.highlight {
+            animation: highlight 1s;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="../index.html" class="back-link">← Back to Home</a>
+            <h1>🗂️ Hash Tables</h1>
+            <p>Fast key-value lookups with O(1) average time</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Concept Explanation -->
+        <div class="card">
+            <h2>What is a Hash Table?</h2>
+            <p>
+                A hash table (also called hash map) is a data structure that maps keys to values using a hash function. 
+                It provides very fast lookups, insertions, and deletions - typically O(1) on average.
+            </p>
+            
+            <h3>How it Works</h3>
+            <ol style="margin: 1rem 0; padding-left: 2rem; color: var(--text-secondary);">
+                <li><strong>Hash Function:</strong> Converts key to an index in the array</li>
+                <li><strong>Storage:</strong> Value is stored at the computed index</li>
+                <li><strong>Collision Handling:</strong> Resolves when two keys hash to same index</li>
+            </ol>
+
+            <h3>Collision Resolution Techniques</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                <div style="padding: 1rem; background: var(--bg-light); border-radius: 8px;">
+                    <strong style="color: var(--primary-color);">Chaining</strong>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
+                        Each bucket stores a linked list of entries
+                    </p>
+                </div>
+                <div style="padding: 1rem; background: var(--bg-light); border-radius: 8px;">
+                    <strong style="color: var(--primary-color);">Open Addressing</strong>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
+                        Find next open slot (linear probing, quadratic probing)
+                    </p>
+                </div>
+            </div>
+
+            <h3>Time Complexity</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                <div class="complexity">
+                    <strong>Search:</strong> O(1) average, O(n) worst
+                </div>
+                <div class="complexity">
+                    <strong>Insert:</strong> O(1) average, O(n) worst
+                </div>
+                <div class="complexity">
+                    <strong>Delete:</strong> O(1) average, O(n) worst
+                </div>
+            </div>
+
+            <h3>Implementation</h3>
+            <pre><code>// Hash Table with chaining
+class HashTable {
+    constructor(size = 50) {
+        this.buckets = new Array(size);
+        this.size = size;
+    }
+    
+    // Hash function
+    hash(key) {
+        let hash = 0;
+        for (let i = 0; i < key.length; i++) {
+            hash = (hash + key.charCodeAt(i) * i) % this.size;
+        }
+        return hash;
+    }
+    
+    // Insert key-value pair
+    set(key, value) {
+        const index = this.hash(key);
+        
+        if (!this.buckets[index]) {
+            this.buckets[index] = [];
+        }
+        
+        // Check if key exists, update if found
+        const bucket = this.buckets[index];
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i][0] === key) {
+                bucket[i][1] = value;
+                return;
+            }
+        }
+        
+        // Add new entry
+        bucket.push([key, value]);
+    }
+    
+    // Get value by key
+    get(key) {
+        const index = this.hash(key);
+        const bucket = this.buckets[index];
+        
+        if (!bucket) return undefined;
+        
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i][0] === key) {
+                return bucket[i][1];
+            }
+        }
+        
+        return undefined;
+    }
+    
+    // Delete key-value pair
+    delete(key) {
+        const index = this.hash(key);
+        const bucket = this.buckets[index];
+        
+        if (!bucket) return false;
+        
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i][0] === key) {
+                bucket.splice(i, 1);
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    // Check if key exists
+    has(key) {
+        return this.get(key) !== undefined;
+    }
+}</code></pre>
+            <div class="code-explanation">
+                <h4>Why this implementation works</h4>
+                <ul>
+                    <li>The custom <code>hash</code> function spreads keys across <code>size</code> buckets to minimize collisions.</li>
+                    <li>Each bucket stores a small array so chaining can handle multiple keys that hash to the same index.</li>
+                    <li><code>set</code> first checks for the key to avoid duplicates before pushing a new pair.</li>
+                    <li><code>get</code>, <code>delete</code>, and <code>has</code> all reuse the hash function, so every operation stays O(1) on average.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Interactive Visualizer -->
+        <div class="card">
+            <h2>🎨 Interactive Hash Table Visualizer</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                See how keys are hashed and stored in buckets
+            </p>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="insertEntry()">Insert</button>
+                <button class="btn btn-secondary" onclick="searchEntry()">Search</button>
+                <button class="btn btn-secondary" onclick="deleteEntry()">Delete</button>
+                <button class="btn btn-secondary" onclick="clearTable()">Clear</button>
+            </div>
+
+            <div style="margin: 1rem 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <input type="text" id="keyInput" placeholder="Enter key">
+                <input type="text" id="valueInput" placeholder="Enter value">
+            </div>
+
+            <div class="visualizer">
+                <div id="hashCanvas" class="hash-table"></div>
+            </div>
+
+            <div id="operationLog" style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1rem; min-height: 60px;">
+                <strong style="color: var(--primary-color);">Operation Log:</strong>
+                <div id="logContent" style="color: var(--text-secondary); margin-top: 0.5rem;">
+                    Ready to perform hash table operations...
+                </div>
+            </div>
+        </div>
+
+        <!-- LeetCode Style Problems -->
+        <div class="card">
+            <h2>💻 Practice Problems</h2>
+            
+            <!-- Problem 1 -->
+            <div class="problem">
+                <h4>1. Group Anagrams <span class="difficulty medium">Medium</span></h4>
+                <p style="margin: 0.5rem 0;">
+                    Given an array of strings, group anagrams together.
+                </p>
+                <p style="margin: 0.5rem 0; font-size: 0.9rem; color: var(--text-secondary);">
+                    <strong>Example:</strong><br>
+                    Input: ["eat","tea","tan","ate","nat","bat"]<br>
+                    Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+                </p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution1')">Show Solution</button>
+                
+                <div id="solution1" class="solution">
+                    <pre><code>function groupAnagrams(strs) {
+    const map = new Map();
+    
+    for (let str of strs) {
+        // Sort string to create key
+        const key = str.split('').sort().join('');
+        
+        if (!map.has(key)) {
+            map.set(key, []);
+        }
+        
+        map.get(key).push(str);
+    }
+    
+    return Array.from(map.values());
+}
+
+console.log(groupAnagrams(["eat","tea","tan","ate","nat","bat"]));</code></pre>
+                    <div class="code-explanation">
+                        <h4>Breaking down the idea</h4>
+                        <ul>
+                            <li>Sorting the letters is the canonical representation of an anagram group.</li>
+                            <li>That sorted string becomes the map key, so words that share characters land in the same bucket.</li>
+                            <li>We lazily create each bucket (array) to keep memory usage tight.</li>
+                            <li>Returning the map values gives us an array of grouped anagrams with no extra processing.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="complexity">
+                        <strong>Time Complexity:</strong> O(n * k log k) where k is max string length
+                    </div>
+                </div>
+            </div>
+
+            <!-- Problem 2 -->
+            <div class="problem">
+                <h4>2. Longest Consecutive Sequence <span class="difficulty medium">Medium</span></h4>
+                <p style="margin: 0.5rem 0;">
+                    Find the length of the longest consecutive elements sequence in an unsorted array.
+                </p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution2')">Show Solution</button>
+                
+                <div id="solution2" class="solution">
+                    <pre><code>function longestConsecutive(nums) {
+    if (nums.length === 0) return 0;
+    
+    const set = new Set(nums);
+    let maxLength = 0;
+    
+    for (let num of set) {
+        // Only start counting if it's the beginning of a sequence
+        if (!set.has(num - 1)) {
+            let currentNum = num;
+            let currentLength = 1;
+            
+            while (set.has(currentNum + 1)) {
+                currentNum++;
+                currentLength++;
+            }
+            
+            maxLength = Math.max(maxLength, currentLength);
+        }
+    }
+    
+    return maxLength;
+}
+
+console.log(longestConsecutive([100,4,200,1,3,2])); // 4</code></pre>
+                    <div class="code-explanation">
+                        <h4>Key insights</h4>
+                        <ul>
+                            <li>The set lets us check for membership in O(1), which is crucial for staying linear time.</li>
+                            <li>We only start counting when <code>num - 1</code> is missing; that guarantees each sequence is processed once.</li>
+                            <li>The inner <code>while</code> walks forward through the consecutive numbers, tallying the streak length.</li>
+                            <li>Tracking <code>maxLength</code> through the loop avoids storing intermediate sequences.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="complexity">
+                        <strong>Time Complexity:</strong> O(n)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="card">
+            <h2>📚 Key Takeaways</h2>
+            <ul style="margin: 1rem 0; padding-left: 2rem; color: var(--text-secondary);">
+                <li>Hash tables provide O(1) average-case lookups, insertions, and deletions</li>
+                <li>Good hash functions distribute keys uniformly to minimize collisions</li>
+                <li>Use hash tables for counting, grouping, and detecting duplicates</li>
+                <li>JavaScript's Map and Set are built on hash table principles</li>
+                <li>Hash tables trade space for time - excellent for optimization</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>Built with ❤️ by <a href="https://x.com/realimamabubakr" target="_blank">Imam Abubakar</a> | <a href="../index.html">Back to Home</a> | <a href="http://github.com/Imam-Abubakar/ultimate-dsa" target="_blank">GitHub</a></p>
+    </footer>
+
+    <script>
+        class HashTable {
+            constructor(size = 8) {
+                this.buckets = new Array(size).fill(null).map(() => []);
+                this.size = size;
+            }
+            
+            hash(key) {
+                let hash = 0;
+                for (let i = 0; i < key.length; i++) {
+                    hash = (hash + key.charCodeAt(i) * (i + 1)) % this.size;
+                }
+                return hash;
+            }
+            
+            set(key, value) {
+                const index = this.hash(key);
+                const bucket = this.buckets[index];
+                
+                for (let i = 0; i < bucket.length; i++) {
+                    if (bucket[i][0] === key) {
+                        bucket[i][1] = value;
+                        return index;
+                    }
+                }
+                
+                bucket.push([key, value]);
+                return index;
+            }
+            
+            get(key) {
+                const index = this.hash(key);
+                const bucket = this.buckets[index];
+                
+                for (let entry of bucket) {
+                    if (entry[0] === key) {
+                        return { value: entry[1], index };
+                    }
+                }
+                
+                return null;
+            }
+            
+            delete(key) {
+                const index = this.hash(key);
+                const bucket = this.buckets[index];
+                
+                for (let i = 0; i < bucket.length; i++) {
+                    if (bucket[i][0] === key) {
+                        bucket.splice(i, 1);
+                        return true;
+                    }
+                }
+                
+                return false;
+            }
+            
+            clear() {
+                this.buckets = new Array(this.size).fill(null).map(() => []);
+            }
+        }
+
+        let hashTable = new HashTable();
+
+        function renderHashTable(highlightIndex = -1) {
+            const canvas = document.getElementById('hashCanvas');
+            canvas.innerHTML = '';
+            
+            hashTable.buckets.forEach((bucket, index) => {
+                const bucketDiv = document.createElement('div');
+                bucketDiv.className = 'hash-bucket';
+                if (index === highlightIndex) {
+                    bucketDiv.style.borderColor = 'var(--success-color)';
+                }
+                
+                const indexLabel = document.createElement('div');
+                indexLabel.className = 'bucket-index';
+                indexLabel.textContent = `Bucket ${index}`;
+                bucketDiv.appendChild(indexLabel);
+                
+                if (bucket.length === 0) {
+                    const empty = document.createElement('div');
+                    empty.style.color = 'var(--text-secondary)';
+                    empty.style.fontSize = '0.8rem';
+                    empty.style.textAlign = 'center';
+                    empty.textContent = 'empty';
+                    bucketDiv.appendChild(empty);
+                } else {
+                    bucket.forEach(([key, value]) => {
+                        const entry = document.createElement('div');
+                        entry.className = 'hash-entry';
+                        entry.textContent = `${key}: ${value}`;
+                        if (index === highlightIndex) {
+                            entry.classList.add('highlight');
+                        }
+                        bucketDiv.appendChild(entry);
+                    });
+                }
+                
+                canvas.appendChild(bucketDiv);
+            });
+        }
+        
+        function logOperation(message) {
+            const logContent = document.getElementById('logContent');
+            const timestamp = new Date().toLocaleTimeString();
+            logContent.innerHTML = `[${timestamp}] ${message}`;
+        }
+        
+        function insertEntry() {
+            const key = document.getElementById('keyInput').value.trim();
+            const value = document.getElementById('valueInput').value.trim();
+            
+            if (!key || !value) {
+                logOperation('Please enter both key and value.');
+                return;
+            }
+            
+            const index = hashTable.set(key, value);
+            renderHashTable(index);
+            logOperation(`Inserted "${key}: ${value}" at bucket ${index}`);
+            
+            document.getElementById('keyInput').value = '';
+            document.getElementById('valueInput').value = '';
+        }
+        
+        function searchEntry() {
+            const key = document.getElementById('keyInput').value.trim();
+            
+            if (!key) {
+                logOperation('Please enter a key to search.');
+                return;
+            }
+            
+            const result = hashTable.get(key);
+            
+            if (result) {
+                renderHashTable(result.index);
+                logOperation(`Found "${key}: ${result.value}" in bucket ${result.index} ✓`);
+            } else {
+                renderHashTable();
+                logOperation(`Key "${key}" not found ✗`);
+            }
+            
+            document.getElementById('keyInput').value = '';
+        }
+        
+        function deleteEntry() {
+            const key = document.getElementById('keyInput').value.trim();
+            
+            if (!key) {
+                logOperation('Please enter a key to delete.');
+                return;
+            }
+            
+            const deleted = hashTable.delete(key);
+            renderHashTable();
+            
+            if (deleted) {
+                logOperation(`Deleted "${key}" successfully ✓`);
+            } else {
+                logOperation(`Key "${key}" not found ✗`);
+            }
+            
+            document.getElementById('keyInput').value = '';
+        }
+        
+        function clearTable() {
+            hashTable.clear();
+            renderHashTable();
+            logOperation('Hash table cleared.');
+        }
+        
+        function toggleSolution(id) {
+            const solution = document.getElementById(id);
+            const button = event.target;
+            
+            if (solution.classList.contains('show')) {
+                solution.classList.remove('show');
+                button.textContent = 'Show Solution';
+            } else {
+                solution.classList.add('show');
+                button.textContent = 'Hide Solution';
+            }
+        }
+        
+        // Initialize
+        renderHashTable();
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Programming - Ultimate DSA</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="../index.html" class="back-link">← Back to Home</a>
+            <h1>💎 Dynamic Programming</h1>
+            <p>Optimizing recursive solutions</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>What is Dynamic Programming?</h2>
+            <p>
+                DP optimizes recursive solutions by storing results of overlapping subproblems. 
+                Two approaches: Memoization (top-down) and Tabulation (bottom-up).
+            </p>
+
+            <h3>Fibonacci - All Approaches</h3>
+            <pre><code>// Naive Recursion - O(2^n)
+function fibRecursive(n) {
+    if (n <= 1) return n;
+    return fibRecursive(n - 1) + fibRecursive(n - 2);
+}
+
+// Memoization (Top-down) - O(n)
+function fibMemo(n, memo = {}) {
+    if (n in memo) return memo[n];
+    if (n <= 1) return n;
+    
+    memo[n] = fibMemo(n - 1, memo) + fibMemo(n - 2, memo);
+    return memo[n];
+}
+
+// Tabulation (Bottom-up) - O(n)
+function fibTab(n) {
+    if (n <= 1) return n;
+    
+    const dp = [0, 1];
+    for (let i = 2; i <= n; i++) {
+        dp[i] = dp[i - 1] + dp[i - 2];
+    }
+    
+    return dp[n];
+}
+
+// Space Optimized - O(1) space
+function fibOptimized(n) {
+    if (n <= 1) return n;
+    
+    let prev2 = 0, prev1 = 1;
+    for (let i = 2; i <= n; i++) {
+        const current = prev1 + prev2;
+        prev2 = prev1;
+        prev1 = current;
+    }
+    
+    return prev1;
+}</code></pre>
+            <div class="code-explanation">
+                <h4>Connecting the approaches</h4>
+                <ul>
+                    <li>The naive recursion mirrors the mathematical recurrence but recomputes overlapping subproblems.</li>
+                    <li>Memoization caches each result so the recursion tree collapses into O(n) unique calls.</li>
+                    <li>Tabulation iteratively builds the array from the base cases, eliminating recursion entirely.</li>
+                    <li>The space-optimized version keeps only the last two values because each Fibonacci number depends on just those.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>💻 Classic DP Problems</h2>
+            
+            <div class="problem">
+                <h4>1. Climbing Stairs <span class="difficulty easy">Easy</span></h4>
+                <p style="margin: 0.5rem 0;">You can climb 1 or 2 steps. How many ways to reach n steps?</p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution1')">Show Solution</button>
+                
+                <div id="solution1" class="solution">
+                    <pre><code>function climbStairs(n) {
+    if (n <= 2) return n;
+    
+    let prev2 = 1, prev1 = 2;
+    for (let i = 3; i <= n; i++) {
+        const current = prev1 + prev2;
+        prev2 = prev1;
+        prev1 = current;
+    }
+    
+    return prev1;
+}</code></pre>
+                    <div class="code-explanation">
+                        <h4>Think of it as Fibonacci</h4>
+                        <ul>
+                            <li>Each step count depends on the previous two counts (ways to reach step n-1 and n-2).</li>
+                            <li>We keep two rolling variables (<code>prev2</code>, <code>prev1</code>) instead of a whole DP array.</li>
+                            <li>The loop accumulates the total ways by sliding the window forward.</li>
+                            <li>This saves memory while still giving O(n) time.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem">
+                <h4>2. Longest Increasing Subsequence <span class="difficulty medium">Medium</span></h4>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution2')">Show Solution</button>
+                
+                <div id="solution2" class="solution">
+                    <pre><code>function lengthOfLIS(nums) {
+    const n = nums.length;
+    const dp = new Array(n).fill(1);
+    
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[j] < nums[i]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+        }
+    }
+    
+    return Math.max(...dp);
+}</code></pre>
+                    <div class="code-explanation">
+                        <h4>Step-by-step reasoning</h4>
+                        <ul>
+                            <li><code>dp[i]</code> records the LIS ending exactly at index <code>i</code>.</li>
+                            <li>For each <code>i</code>, we compare against previous indices <code>j</code> to see if <code>nums[i]</code> can extend their subsequence.</li>
+                            <li>The <code>Math.max</code> keeps the best length when multiple <code>j</code> values work.</li>
+                            <li>Taking the max of the entire <code>dp</code> array gives the final answer.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem">
+                <h4>3. Coin Change <span class="difficulty medium">Medium</span></h4>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution3')">Show Solution</button>
+                
+                <div id="solution3" class="solution">
+                    <pre><code>function coinChange(coins, amount) {
+    const dp = new Array(amount + 1).fill(Infinity);
+    dp[0] = 0;
+    
+    for (let i = 1; i <= amount; i++) {
+        for (let coin of coins) {
+            if (i >= coin) {
+                dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+            }
+        }
+    }
+    
+    return dp[amount] === Infinity ? -1 : dp[amount];
+}</code></pre>
+                    <div class="code-explanation">
+                        <h4>Why the table works</h4>
+                        <ul>
+                            <li><code>dp[x]</code> stores the minimum coins needed to build value <code>x</code>.</li>
+                            <li>We initialize to <code>Infinity</code> so any real combination will be smaller.</li>
+                            <li>For each amount, we try every coin and relax the state with <code>dp[i - coin] + 1</code>.</li>
+                            <li>If <code>dp[amount]</code> stays <code>Infinity</code>, we know no combination exists.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📚 Key Takeaways</h2>
+            <ul style="margin: 1rem 0; padding-left: 2rem; color: var(--text-secondary);">
+                <li>DP optimizes problems with overlapping subproblems</li>
+                <li>Memoization: cache results in recursion</li>
+                <li>Tabulation: build solution bottom-up</li>
+                <li>Identify recurrence relation to solve DP problems</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>Built with ❤️ by <a href="https://x.com/realimamabubakr" target="_blank">Imam Abubakar</a> | <a href="../index.html">Back to Home</a> | <a href="http://github.com/Imam-Abubakar/ultimate-dsa" target="_blank">GitHub</a></p>
+    </footer>
+
+    <script>
+        function toggleSolution(id) {
+            const solution = document.getElementById(id);
+            const button = event.target;
+            if (solution.classList.contains('show')) {
+                solution.classList.remove('show');
+                button.textContent = 'Show Solution';
+            } else {
+                solution.classList.add('show');
+                button.textContent = 'Hide Solution';
+            }
+        }
+    </script>
+</body>
+</html>
+

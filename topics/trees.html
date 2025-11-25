@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trees - Ultimate DSA</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            min-height: 350px;
+        }
+        
+        .tree-level {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 15px 0;
+        }
+        
+        .tree-node {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .tree-node:hover {
+            transform: scale(1.2);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.5);
+        }
+        
+        .tree-node.root {
+            border-color: var(--success-color);
+            box-shadow: 0 0 10px var(--success-color);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="../index.html" class="back-link">← Back to Home</a>
+            <h1>🌳 Trees</h1>
+            <p>Hierarchical data structures for efficient searching and sorting</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Concept Explanation -->
+        <div class="card">
+            <h2>What is a Tree?</h2>
+            <p>
+                A tree is a hierarchical data structure consisting of nodes connected by edges. Each tree has a root node, 
+                and every node has zero or more child nodes. Trees are used to represent hierarchical relationships.
+            </p>
+            
+            <h3>Key Terminology</h3>
+            <ul style="margin: 1rem 0; padding-left: 2rem; color: var(--text-secondary);">
+                <li><strong>Root:</strong> The topmost node</li>
+                <li><strong>Parent/Child:</strong> Nodes connected by edges</li>
+                <li><strong>Leaf:</strong> Node with no children</li>
+                <li><strong>Height:</strong> Longest path from root to leaf</li>
+                <li><strong>Depth:</strong> Distance from root to a node</li>
+                <li><strong>Subtree:</strong> Tree formed by a node and its descendants</li>
+            </ul>
+
+            <h3>Binary Tree Node</h3>
+            <pre><code>// TreeNode class
+class TreeNode {
+    constructor(val) {
+        this.val = val;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+// Binary Search Tree class
+class BST {
+    constructor() {
+        this.root = null;
+    }
+    
+    // Insert value
+    insert(val) {
+        const newNode = new TreeNode(val);
+        
+        if (!this.root) {
+            this.root = newNode;
+            return;
+        }
+        
+        let current = this.root;
+        while (true) {
+            if (val < current.val) {
+                if (!current.left) {
+                    current.left = newNode;
+                    return;
+                }
+                current = current.left;
+            } else {
+                if (!current.right) {
+                    current.right = newNode;
+                    return;
+                }
+                current = current.right;
+            }
+        }
+    }
+    
+    // Search for value
+    search(val) {
+        let current = this.root;
+        
+        while (current) {
+            if (val === current.val) return true;
+            if (val < current.val) {
+                current = current.left;
+            } else {
+                current = current.right;
+            }
+        }
+        
+        return false;
+    }
+}
+
+// Tree Traversals
+function inorderTraversal(root) {
+    // Left -> Root -> Right
+    if (!root) return;
+    inorderTraversal(root.left);
+    console.log(root.val);
+    inorderTraversal(root.right);
+}
+
+function preorderTraversal(root) {
+    // Root -> Left -> Right
+    if (!root) return;
+    console.log(root.val);
+    preorderTraversal(root.left);
+    preorderTraversal(root.right);
+}
+
+function postorderTraversal(root) {
+    // Left -> Right -> Root
+    if (!root) return;
+    postorderTraversal(root.left);
+    postorderTraversal(root.right);
+    console.log(root.val);
+}
+
+function levelOrderTraversal(root) {
+    // Breadth-first traversal
+    if (!root) return;
+    
+    const queue = [root];
+    while (queue.length > 0) {
+        const node = queue.shift();
+        console.log(node.val);
+        
+        if (node.left) queue.push(node.left);
+        if (node.right) queue.push(node.right);
+    }
+}</code></pre>
+            <div class="code-explanation">
+                <h4>How to interpret this toolkit</h4>
+                <ul>
+                    <li><code>TreeNode</code> defines the basic structure with <code>left</code> and <code>right</code> child pointers.</li>
+                    <li>The <code>BST</code> class inserts values by walking down the tree until it finds the correct null child, preserving the BST invariant.</li>
+                    <li><code>search</code> uses that invariant to skip half of the remaining nodes at every comparison.</li>
+                    <li>The traversal helpers show the three DFS orders plus a BFS (level order) that uses a queue.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Interactive Visualizer -->
+        <div class="card">
+            <h2>🎨 Interactive Binary Search Tree Visualizer</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                Build and visualize a BST
+            </p>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="insertNode()">Insert</button>
+                <button class="btn btn-secondary" onclick="searchNode()">Search</button>
+                <button class="btn btn-secondary" onclick="showInorder()">Inorder</button>
+                <button class="btn btn-secondary" onclick="showPreorder()">Preorder</button>
+                <button class="btn btn-secondary" onclick="clearTree()">Clear</button>
+            </div>
+
+            <div style="margin: 1rem 0;">
+                <input type="number" id="treeInput" placeholder="Enter a value">
+            </div>
+
+            <div class="visualizer">
+                <div id="treeCanvas" class="tree-container">
+                    <div style="color: var(--text-secondary);">Tree is empty. Insert nodes to visualize.</div>
+                </div>
+            </div>
+
+            <div id="operationLog" style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1rem; min-height: 60px;">
+                <strong style="color: var(--primary-color);">Operation Log:</strong>
+                <div id="logContent" style="color: var(--text-secondary); margin-top: 0.5rem;">
+                    Ready to build a tree...
+                </div>
+            </div>
+        </div>
+
+        <!-- LeetCode Style Problems -->
+        <div class="card">
+            <h2>💻 Practice Problems</h2>
+            
+            <!-- Problem 1 -->
+            <div class="problem">
+                <h4>1. Maximum Depth of Binary Tree <span class="difficulty easy">Easy</span></h4>
+                <p style="margin: 0.5rem 0;">
+                    Find the maximum depth (height) of a binary tree.
+                </p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution1')">Show Solution</button>
+                
+                <div id="solution1" class="solution">
+                    <pre><code>function maxDepth(root) {
+    if (!root) return 0;
+    
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
+    
+    return Math.max(leftDepth, rightDepth) + 1;
+}
+
+// Iterative using level order
+function maxDepthIterative(root) {
+    if (!root) return 0;
+    
+    let depth = 0;
+    const queue = [root];
+    
+    while (queue.length > 0) {
+        const levelSize = queue.length;
+        depth++;
+        
+        for (let i = 0; i < levelSize; i++) {
+            const node = queue.shift();
+            if (node.left) queue.push(node.left);
+            if (node.right) queue.push(node.right);
+        }
+    }
+    
+    return depth;
+}</code></pre>
+                    <div class="code-explanation">
+                        <h4>Why both versions work</h4>
+                        <ul>
+                            <li>The recursive solution computes the height by taking the max depth of the left and right subtrees plus one for the current node.</li>
+                            <li>The iterative version performs a level-order traversal, incrementing <code>depth</code> after processing each layer.</li>
+                            <li>Both visit every node exactly once, keeping runtime linear.</li>
+                            <li>The choice between them comes down to style and whether you want to avoid recursion.</li>
+                        </ul>
+                    </div>
+                    <div class="complexity">
+                        <strong>Time:</strong> O(n) | <strong>Space:</strong> O(h) where h is height
+                    </div>
+                </div>
+            </div>
+
+            <!-- Problem 2 -->
+            <div class="problem">
+                <h4>2. Validate Binary Search Tree <span class="difficulty medium">Medium</span></h4>
+                <p style="margin: 0.5rem 0;">
+                    Determine if a binary tree is a valid BST.
+                </p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution2')">Show Solution</button>
+                
+                <div id="solution2" class="solution">
+                    <pre><code>function isValidBST(root, min = -Infinity, max = Infinity) {
+    if (!root) return true;
+    
+    // Current value must be within range
+    if (root.val <= min || root.val >= max) {
+        return false;
+    }
+    
+    // Left subtree: all values < root.val
+    // Right subtree: all values > root.val
+    return isValidBST(root.left, min, root.val) &&
+           isValidBST(root.right, root.val, max);
+}</code></pre>
+                    <div class="code-explanation">
+                        <h4>Maintaining the valid range</h4>
+                        <ul>
+                            <li>Each node must fall strictly between <code>min</code> and <code>max</code>; the root starts with (-∞, ∞).</li>
+                            <li>For the left child we clamp <code>max</code> to <code>root.val</code>, and for the right child we clamp <code>min</code>.</li>
+                            <li>If any node violates the allowed range, we immediately return false.</li>
+                            <li>This enforces the BST rule for all descendants, not just direct children.</li>
+                        </ul>
+                    </div>
+                    <div class="complexity">
+                        <strong>Time:</strong> O(n) | <strong>Space:</strong> O(h)
+                    </div>
+                </div>
+            </div>
+
+            <!-- Problem 3 -->
+            <div class="problem">
+                <h4>3. Lowest Common Ancestor <span class="difficulty medium">Medium</span></h4>
+                <p style="margin: 0.5rem 0;">
+                    Find the lowest common ancestor of two nodes in a BST.
+                </p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution3')">Show Solution</button>
+                
+                <div id="solution3" class="solution">
+                    <pre><code>function lowestCommonAncestor(root, p, q) {
+    // If both values are less than root, LCA is in left subtree
+    if (p.val < root.val && q.val < root.val) {
+        return lowestCommonAncestor(root.left, p, q);
+    }
+    
+    // If both values are greater than root, LCA is in right subtree
+    if (p.val > root.val && q.val > root.val) {
+        return lowestCommonAncestor(root.right, p, q);
+    }
+    
+    // Otherwise, root is the LCA
+    return root;
+}</code></pre>
+                    <div class="code-explanation">
+                        <h4>Leveraging BST ordering</h4>
+                        <ul>
+                            <li>If both targets are less than the current node, the LCA must sit entirely in the left subtree.</li>
+                            <li>If both are greater, we recur into the right subtree.</li>
+                            <li>The first node where the values diverge (one on each side, or one equal to the root) is the lowest common ancestor.</li>
+                            <li>This avoids storing paths and works in O(h) time.</li>
+                        </ul>
+                    </div>
+                    <div class="complexity">
+                        <strong>Time:</strong> O(h) | <strong>Space:</strong> O(h)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="card">
+            <h2>📚 Key Takeaways</h2>
+            <ul style="margin: 1rem 0; padding-left: 2rem; color: var(--text-secondary);">
+                <li>BST provides O(log n) average time for search, insert, delete</li>
+                <li>Three main DFS traversals: inorder, preorder, postorder</li>
+                <li>BFS (level-order) uses a queue for traversal</li>
+                <li>Recursion is natural for tree problems</li>
+                <li>Inorder traversal of BST gives sorted order</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>Built with ❤️ by <a href="https://x.com/realimamabubakr" target="_blank">Imam Abubakar</a> | <a href="../index.html">Back to Home</a> | <a href="http://github.com/Imam-Abubakar/ultimate-dsa" target="_blank">GitHub</a></p>
+    </footer>
+
+    <script>
+        class TreeNode {
+            constructor(val) {
+                this.val = val;
+                this.left = null;
+                this.right = null;
+            }
+        }
+
+        class BST {
+            constructor() {
+                this.root = null;
+            }
+            
+            insert(val) {
+                this.root = this._insertRec(this.root, val);
+            }
+            
+            _insertRec(node, val) {
+                if (!node) return new TreeNode(val);
+                
+                if (val < node.val) {
+                    node.left = this._insertRec(node.left, val);
+                } else if (val > node.val) {
+                    node.right = this._insertRec(node.right, val);
+                }
+                
+                return node;
+            }
+            
+            search(val) {
+                return this._searchRec(this.root, val);
+            }
+            
+            _searchRec(node, val) {
+                if (!node) return false;
+                if (node.val === val) return true;
+                
+                if (val < node.val) {
+                    return this._searchRec(node.left, val);
+                }
+                return this._searchRec(node.right, val);
+            }
+            
+            inorder() {
+                const result = [];
+                this._inorderRec(this.root, result);
+                return result;
+            }
+            
+            _inorderRec(node, result) {
+                if (node) {
+                    this._inorderRec(node.left, result);
+                    result.push(node.val);
+                    this._inorderRec(node.right, result);
+                }
+            }
+            
+            preorder() {
+                const result = [];
+                this._preorderRec(this.root, result);
+                return result;
+            }
+            
+            _preorderRec(node, result) {
+                if (node) {
+                    result.push(node.val);
+                    this._preorderRec(node.left, result);
+                    this._preorderRec(node.right, result);
+                }
+            }
+        }
+
+        let bst = new BST();
+
+        function renderTree() {
+            const canvas = document.getElementById('treeCanvas');
+            canvas.innerHTML = '';
+            
+            if (!bst.root) {
+                canvas.innerHTML = '<div style="color: var(--text-secondary);">Tree is empty. Insert nodes to visualize.</div>';
+                return;
+            }
+            
+            // Simple visualization showing node values in levels
+            const levels = [];
+            const queue = [[bst.root, 0]];
+            
+            while (queue.length > 0) {
+                const [node, level] = queue.shift();
+                
+                if (!levels[level]) levels[level] = [];
+                levels[level].push(node.val);
+                
+                if (node.left) queue.push([node.left, level + 1]);
+                if (node.right) queue.push([node.right, level + 1]);
+            }
+            
+            levels.forEach((level, idx) => {
+                const levelDiv = document.createElement('div');
+                levelDiv.className = 'tree-level';
+                
+                level.forEach(val => {
+                    const nodeDiv = document.createElement('div');
+                    nodeDiv.className = 'tree-node';
+                    if (idx === 0) nodeDiv.classList.add('root');
+                    nodeDiv.textContent = val;
+                    levelDiv.appendChild(nodeDiv);
+                });
+                
+                canvas.appendChild(levelDiv);
+            });
+        }
+        
+        function logOperation(message) {
+            const logContent = document.getElementById('logContent');
+            const timestamp = new Date().toLocaleTimeString();
+            logContent.innerHTML = `[${timestamp}] ${message}`;
+        }
+        
+        function insertNode() {
+            const input = document.getElementById('treeInput');
+            const val = parseInt(input.value);
+            
+            if (isNaN(val)) {
+                logOperation('Please enter a valid number.');
+                return;
+            }
+            
+            bst.insert(val);
+            renderTree();
+            logOperation(`Inserted ${val} into BST`);
+            input.value = '';
+        }
+        
+        function searchNode() {
+            const input = document.getElementById('treeInput');
+            const val = parseInt(input.value);
+            
+            if (isNaN(val)) {
+                logOperation('Please enter a valid number.');
+                return;
+            }
+            
+            const found = bst.search(val);
+            logOperation(found ? `Found ${val} in tree ✓` : `${val} not found ✗`);
+            input.value = '';
+        }
+        
+        function showInorder() {
+            const result = bst.inorder();
+            logOperation(`Inorder: [${result.join(', ')}]`);
+        }
+        
+        function showPreorder() {
+            const result = bst.preorder();
+            logOperation(`Preorder: [${result.join(', ')}]`);
+        }
+        
+        function clearTree() {
+            bst = new BST();
+            renderTree();
+            logOperation('Tree cleared.');
+        }
+        
+        function toggleSolution(id) {
+            const solution = document.getElementById(id);
+            const button = event.target;
+            
+            if (solution.classList.contains('show')) {
+                solution.classList.remove('show');
+                button.textContent = 'Show Solution';
+            } else {
+                solution.classList.add('show');
+                button.textContent = 'Hide Solution';
+            }
+        }
+        
+        // Initialize with sample values
+        [50, 30, 70, 20, 40, 60, 80].forEach(val => bst.insert(val));
+        renderTree();
+    </script>
+</body>
+</html>
+

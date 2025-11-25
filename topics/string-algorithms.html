@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>String Algorithms - Ultimate DSA</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="../index.html" class="back-link">← Back to Home</a>
+            <h1>📝 String Algorithms</h1>
+            <p>Pattern matching and string manipulation</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>String Algorithms</h2>
+            
+            <h3>Common String Problems</h3>
+            <pre><code>// Check if palindrome
+function isPalindrome(s) {
+    s = s.toLowerCase().replace(/[^a-z0-9]/g, '');
+    let left = 0, right = s.length - 1;
+    
+    while (left < right) {
+        if (s[left] !== s[right]) return false;
+        left++;
+        right--;
+    }
+    
+    return true;
+}
+
+// Longest Palindromic Substring
+function longestPalindrome(s) {
+    if (s.length < 2) return s;
+    
+    let start = 0, maxLen = 1;
+    
+    function expandAroundCenter(left, right) {
+        while (left >= 0 && right < s.length && s[left] === s[right]) {
+            const len = right - left + 1;
+            if (len > maxLen) {
+                start = left;
+                maxLen = len;
+            }
+            left--;
+            right++;
+        }
+    }
+    
+    for (let i = 0; i < s.length; i++) {
+        expandAroundCenter(i, i);     // Odd length
+        expandAroundCenter(i, i + 1); // Even length
+    }
+    
+    return s.substring(start, start + maxLen);
+}</code></pre>
+            <div class="code-explanation">
+                <h4>What each snippet shows</h4>
+                <ul>
+                    <li><code>isPalindrome</code> normalizes the string, then uses two pointers moving toward the center to compare characters.</li>
+                    <li><code>longestPalindrome</code> expands around every possible center (single character or between characters) to find the longest symmetric stretch.</li>
+                    <li>Tracking <code>start</code> and <code>maxLen</code> lets us extract the substring at the end without storing intermediates.</li>
+                    <li>These techniques illustrate the sliding window/two-pointer patterns used across many string problems.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>💻 Practice Problems</h2>
+            
+            <div class="problem">
+                <h4>1. Longest Substring Without Repeating Characters <span class="difficulty medium">Medium</span></h4>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution1')">Show Solution</button>
+                
+                <div id="solution1" class="solution">
+                    <pre><code>function lengthOfLongestSubstring(s) {
+    const seen = new Map();
+    let left = 0, maxLen = 0;
+    
+    for (let right = 0; right < s.length; right++) {
+        if (seen.has(s[right])) {
+            left = Math.max(left, seen.get(s[right]) + 1);
+        }
+        
+        seen.set(s[right], right);
+        maxLen = Math.max(maxLen, right - left + 1);
+    }
+    
+    return maxLen;
+}</code></pre>
+                    <div class="code-explanation">
+                        <h4>Sliding window reasoning</h4>
+                        <ul>
+                            <li><code>right</code> expands the window one character at a time.</li>
+                            <li>The <code>seen</code> map remembers the most recent index of each character.</li>
+                            <li>If we repeat a character inside the window, we move <code>left</code> to one past its previous index to restore uniqueness.</li>
+                            <li><code>maxLen</code> stores the best window length encountered as we scan.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📚 Key Takeaways</h2>
+            <ul style="margin: 1rem 0; padding-left: 2rem; color: var(--text-secondary);">
+                <li>Two-pointer technique works well for strings</li>
+                <li>Sliding window for substring problems</li>
+                <li>KMP for efficient pattern matching</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>Built with ❤️ by <a href="https://x.com/realimamabubakr" target="_blank">Imam Abubakar</a> | <a href="../index.html">Back to Home</a> | <a href="http://github.com/Imam-Abubakar/ultimate-dsa" target="_blank">GitHub</a></p>
+    </footer>
+
+    <script>
+        function toggleSolution(id) {
+            const solution = document.getElementById(id);
+            const button = event.target;
+            if (solution.classList.contains('show')) {
+                solution.classList.remove('show');
+                button.textContent = 'Show Solution';
+            } else {
+                solution.classList.add('show');
+                button.textContent = 'Hide Solution';
+            }
+        }
+    </script>
+</body>
+</html>
+

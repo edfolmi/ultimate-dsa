@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph Algorithms - Ultimate DSA</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="../index.html" class="back-link">← Back to Home</a>
+            <h1>🗺️ Graph Algorithms</h1>
+            <p>Shortest paths, MST, and more</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>Important Graph Algorithms</h2>
+            
+            <h3>Dijkstra's Algorithm (Shortest Path)</h3>
+            <pre><code>function dijkstra(graph, start) {
+    const distances = {};
+    const visited = new Set();
+    const pq = [[0, start]]; // [distance, node]
+    
+    // Initialize distances
+    for (let node in graph) {
+        distances[node] = Infinity;
+    }
+    distances[start] = 0;
+    
+    while (pq.length > 0) {
+        pq.sort((a, b) => a[0] - b[0]);
+        const [dist, node] = pq.shift();
+        
+        if (visited.has(node)) continue;
+        visited.add(node);
+        
+        for (let [neighbor, weight] of graph[node]) {
+            const newDist = dist + weight;
+            
+            if (newDist < distances[neighbor]) {
+                distances[neighbor] = newDist;
+                pq.push([newDist, neighbor]);
+            }
+        }
+    }
+    
+    return distances;
+}</code></pre>
+            <div class="code-explanation">
+                <h4>Understanding the flow</h4>
+                <ul>
+                    <li>We initialize every node to <code>Infinity</code> so any real path will be smaller.</li>
+                    <li>A simple priority queue (sorted array) always gives us the next closest node to expand.</li>
+                    <li>Relaxation happens inside the neighbor loop—if a new distance beats the recorded one, update and enqueue.</li>
+                    <li>The <code>visited</code> set ensures we never process the same node twice, keeping results optimal.</li>
+                </ul>
+            </div>
+
+            <h3>Topological Sort</h3>
+            <pre><code>function topologicalSort(graph) {
+    const visited = new Set();
+    const stack = [];
+    
+    function dfs(node) {
+        visited.add(node);
+        
+        for (let neighbor of graph[node] || []) {
+            if (!visited.has(neighbor)) {
+                dfs(neighbor);
+            }
+        }
+        
+        stack.push(node);
+    }
+    
+    for (let node in graph) {
+        if (!visited.has(node)) {
+            dfs(node);
+        }
+    }
+    
+    return stack.reverse();
+}</code></pre>
+            <div class="code-explanation">
+                <h4>How this works</h4>
+                <ul>
+                    <li>Depth-first search walks down each dependency chain before adding the node to the stack.</li>
+                    <li>By pushing after visiting children, the stack stores nodes in reverse dependency order.</li>
+                    <li>Running DFS from every unvisited node ensures disconnected DAG components are included.</li>
+                    <li>Reversing the stack yields a valid ordering where every prerequisite appears before its dependents.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📚 Key Algorithms</h2>
+            <ul style="margin: 1rem 0; padding-left: 2rem; color: var(--text-secondary);">
+                <li><strong>Dijkstra:</strong> Shortest path (non-negative weights)</li>
+                <li><strong>Bellman-Ford:</strong> Shortest path (handles negative)</li>
+                <li><strong>Floyd-Warshall:</strong> All-pairs shortest path</li>
+                <li><strong>Kruskal/Prim:</strong> Minimum spanning tree</li>
+                <li><strong>Topological Sort:</strong> Ordering for DAGs</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>Built with ❤️ by <a href="https://x.com/realimamabubakr" target="_blank">Imam Abubakar</a> | <a href="../index.html">Back to Home</a> | <a href="http://github.com/Imam-Abubakar/ultimate-dsa" target="_blank">GitHub</a></p>
+    </footer>
+</body>
+</html>
+

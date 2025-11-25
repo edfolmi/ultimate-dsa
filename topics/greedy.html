@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greedy Algorithms - Ultimate DSA</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="../index.html" class="back-link">← Back to Home</a>
+            <h1>🎯 Greedy Algorithms</h1>
+            <p>Making locally optimal choices</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>What is a Greedy Algorithm?</h2>
+            <p>
+                Greedy algorithms make the locally optimal choice at each step, hoping to find a global optimum. 
+                They don't always work, but when they do, they're often simple and efficient.
+            </p>
+
+            <h3>When to Use Greedy</h3>
+            <ul style="margin: 1rem 0; padding-left: 2rem; color: var(--text-secondary);">
+                <li>Problem has optimal substructure</li>
+                <li>Greedy choice property holds</li>
+                <li>No need to reconsider past choices</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>💻 Practice Problems</h2>
+            
+            <div class="problem">
+                <h4>1. Jump Game <span class="difficulty medium">Medium</span></h4>
+                <p style="margin: 0.5rem 0;">Can you reach the last index?</p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution1')">Show Solution</button>
+                
+                <div id="solution1" class="solution">
+                    <pre><code>function canJump(nums) {
+    let maxReach = 0;
+    
+    for (let i = 0; i < nums.length; i++) {
+        if (i > maxReach) return false;
+        maxReach = Math.max(maxReach, i + nums[i]);
+    }
+    
+    return true;
+}</code></pre>
+                    <div class="code-explanation">
+                        <h4>Greedy insight</h4>
+                        <ul>
+                            <li><code>maxReach</code> tracks the furthest index we can get to so far.</li>
+                            <li>If we ever land on an index beyond <code>maxReach</code>, it means previous jumps couldn’t reach it.</li>
+                            <li>Updating <code>maxReach</code> with <code>i + nums[i]</code> greedily keeps the best jump length seen.</li>
+                            <li>Reaching the end of the loop without failing implies every position was reachable, so the last index is too.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem">
+                <h4>2. Meeting Rooms II <span class="difficulty medium">Medium</span></h4>
+                <p style="margin: 0.5rem 0;">Minimum conference rooms needed.</p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution2')">Show Solution</button>
+                
+                <div id="solution2" class="solution">
+                    <pre><code>function minMeetingRooms(intervals) {
+    const starts = intervals.map(i => i[0]).sort((a, b) => a - b);
+    const ends = intervals.map(i => i[1]).sort((a, b) => a - b);
+    
+    let rooms = 0, endIdx = 0;
+    
+    for (let i = 0; i < starts.length; i++) {
+        if (starts[i] < ends[endIdx]) {
+            rooms++;
+        } else {
+            endIdx++;
+        }
+    }
+    
+    return rooms;
+}</code></pre>
+                    <div class="code-explanation">
+                        <h4>Why sorting twice helps</h4>
+                        <ul>
+                            <li>We sort start times and end times separately to simulate a sweep line.</li>
+                            <li>Whenever a meeting starts before the earliest current meeting ends, we need another room.</li>
+                            <li>If the start is >= the earliest end, we free a room by moving the end pointer.</li>
+                            <li>The pointer dance is greedy: always reuse the room that frees up first.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📚 Key Takeaways</h2>
+            <ul style="margin: 1rem 0; padding-left: 2rem; color: var(--text-secondary);">
+                <li>Greedy algorithms are intuitive and efficient</li>
+                <li>Prove correctness before implementation</li>
+                <li>Common in interval scheduling and optimization</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>Built with ❤️ by <a href="https://x.com/realimamabubakr" target="_blank">Imam Abubakar</a> | <a href="../index.html">Back to Home</a> | <a href="http://github.com/Imam-Abubakar/ultimate-dsa" target="_blank">GitHub</a></p>
+    </footer>
+
+    <script>
+        function toggleSolution(id) {
+            const solution = document.getElementById(id);
+            const button = event.target;
+            if (solution.classList.contains('show')) {
+                solution.classList.remove('show');
+                button.textContent = 'Show Solution';
+            } else {
+                solution.classList.add('show');
+                button.textContent = 'Hide Solution';
+            }
+        }
+    </script>
+</body>
+</html>
+

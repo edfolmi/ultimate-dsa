@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorting Algorithms - Ultimate DSA</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .sort-bar {
+            display: inline-block;
+            width: 40px;
+            background: var(--primary-color);
+            margin: 0 2px;
+            transition: all 0.3s ease;
+            border-radius: 4px 4px 0 0;
+        }
+        
+        .sort-bar.comparing {
+            background: var(--warning-color);
+        }
+        
+        .sort-bar.sorted {
+            background: var(--success-color);
+        }
+        
+        .sort-bar.swapping {
+            background: var(--error-color);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="../index.html" class="back-link">← Back to Home</a>
+            <h1>🔄 Sorting Algorithms</h1>
+            <p>Organizing data efficiently</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>Sorting Algorithms Overview</h2>
+            <p>
+                Sorting is arranging data in a particular order (ascending or descending). Different algorithms 
+                have different trade-offs between time complexity, space complexity, and stability.
+            </p>
+            
+            <h3>Comparison of Sorting Algorithms</h3>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                    <thead>
+                        <tr style="background: var(--bg-light);">
+                            <th style="padding: 0.75rem; border: 1px solid var(--border-color);">Algorithm</th>
+                            <th style="padding: 0.75rem; border: 1px solid var(--border-color);">Best</th>
+                            <th style="padding: 0.75rem; border: 1px solid var(--border-color);">Average</th>
+                            <th style="padding: 0.75rem; border: 1px solid var(--border-color);">Worst</th>
+                            <th style="padding: 0.75rem; border: 1px solid var(--border-color);">Space</th>
+                            <th style="padding: 0.75rem; border: 1px solid var(--border-color);">Stable</th>
+                        </tr>
+                    </thead>
+                    <tbody style="color: var(--text-secondary);">
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Bubble Sort</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">O(n)</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">O(n²)</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">O(n²)</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">O(1)</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Yes</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Selection Sort</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">O(n²)</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">O(n²)</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">O(n²)</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">O(1)</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">No</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Insertion Sort</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">O(n)</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">O(n²)</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">O(n²)</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">O(1)</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Yes</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Merge Sort</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">O(n log n)</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">O(n log n)</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">O(n log n)</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">O(n)</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Yes</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Quick Sort</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">O(n log n)</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">O(n log n)</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">O(n²)</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">O(log n)</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--border-color);">No</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Implementations</h3>
+            <pre><code>// Bubble Sort
+function bubbleSort(arr) {
+    const n = arr.length;
+    for (let i = 0; i < n - 1; i++) {
+        let swapped = false;
+        for (let j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                swapped = true;
+            }
+        }
+        if (!swapped) break; // Optimization
+    }
+    return arr;
+}
+
+// Quick Sort
+function quickSort(arr, low = 0, high = arr.length - 1) {
+    if (low < high) {
+        const pi = partition(arr, low, high);
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+    return arr;
+}
+
+function partition(arr, low, high) {
+    const pivot = arr[high];
+    let i = low - 1;
+    
+    for (let j = low; j < high; j++) {
+        if (arr[j] < pivot) {
+            i++;
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+    }
+    
+    [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
+    return i + 1;
+}
+
+// Merge Sort
+function mergeSort(arr) {
+    if (arr.length <= 1) return arr;
+    
+    const mid = Math.floor(arr.length / 2);
+    const left = mergeSort(arr.slice(0, mid));
+    const right = mergeSort(arr.slice(mid));
+    
+    return merge(left, right);
+}
+
+function merge(left, right) {
+    const result = [];
+    let i = 0, j = 0;
+    
+    while (i < left.length && j < right.length) {
+        if (left[i] < right[j]) {
+            result.push(left[i++]);
+        } else {
+            result.push(right[j++]);
+        }
+    }
+    
+    return result.concat(left.slice(i)).concat(right.slice(j));
+}</code></pre>
+            <div class="code-explanation">
+                <h4>Comparing the strategies</h4>
+                <ul>
+                    <li><strong>Bubble sort</strong> repeatedly swaps adjacent out-of-order pairs; the <code>swapped</code> flag short-circuits when the array is already sorted.</li>
+                    <li><strong>Quick sort</strong> partitions around a pivot, then sorts the subarrays recursively—all in-place.</li>
+                    <li><strong>Merge sort</strong> splits the array, sorts each half, and combines them using the <code>merge</code> helper.</li>
+                    <li>Seeing these side by side highlights the trade-offs between simplicity, extra space, and practical speed.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Interactive Visualizer -->
+        <div class="card">
+            <h2>🎨 Sorting Visualizer</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                Watch sorting algorithms in action
+            </p>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="visualizeBubbleSort()">Bubble Sort</button>
+                <button class="btn btn-primary" onclick="visualizeQuickSort()">Quick Sort</button>
+                <button class="btn btn-secondary" onclick="generateNewArray()">New Array</button>
+            </div>
+
+            <div class="visualizer">
+                <div id="sortCanvas" style="display: flex; align-items: flex-end; justify-content: center; height: 300px; padding: 20px;"></div>
+            </div>
+
+            <div id="operationLog" style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1rem; min-height: 60px;">
+                <strong style="color: var(--primary-color);">Operation Log:</strong>
+                <div id="logContent" style="color: var(--text-secondary); margin-top: 0.5rem;">
+                    Ready to visualize sorting...
+                </div>
+            </div>
+        </div>
+
+        <!-- Practice Problems -->
+        <div class="card">
+            <h2>💻 Practice Problems</h2>
+            
+            <div class="problem">
+                <h4>1. Sort Colors (Dutch National Flag) <span class="difficulty medium">Medium</span></h4>
+                <p style="margin: 0.5rem 0;">
+                    Sort an array with values 0, 1, and 2 in-place.
+                </p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution1')">Show Solution</button>
+                
+                <div id="solution1" class="solution">
+                    <pre><code>function sortColors(nums) {
+    let low = 0, mid = 0, high = nums.length - 1;
+    
+    while (mid <= high) {
+        if (nums[mid] === 0) {
+            [nums[low], nums[mid]] = [nums[mid], nums[low]];
+            low++;
+            mid++;
+        } else if (nums[mid] === 1) {
+            mid++;
+        } else {
+            [nums[mid], nums[high]] = [nums[high], nums[mid]];
+            high--;
+        }
+    }
+}</code></pre>
+                    <div class="code-explanation">
+                        <h4>Dutch National Flag intuition</h4>
+                        <ul>
+                            <li><code>low</code> tracks the boundary between zeros and ones, <code>mid</code> scans the array, and <code>high</code> marks the boundary for twos.</li>
+                            <li>Swapping with <code>low</code> when we see a zero expands the left partition.</li>
+                            <li>Swapping with <code>high</code> when we see a two shrinks the right partition, but we re-check the swapped value by not advancing <code>mid</code>.</li>
+                            <li>Values of one already belong in the middle partition, so we just advance <code>mid</code>.</li>
+                        </ul>
+                    </div>
+                    <div class="complexity">
+                        <strong>Time:</strong> O(n) | <strong>Space:</strong> O(1)
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem">
+                <h4>2. Merge Intervals <span class="difficulty medium">Medium</span></h4>
+                <p style="margin: 0.5rem 0;">
+                    Merge overlapping intervals.
+                </p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution2')">Show Solution</button>
+                
+                <div id="solution2" class="solution">
+                    <pre><code>function merge(intervals) {
+    if (intervals.length === 0) return [];
+    
+    // Sort by start time
+    intervals.sort((a, b) => a[0] - b[0]);
+    
+    const result = [intervals[0]];
+    
+    for (let i = 1; i < intervals.length; i++) {
+        const last = result[result.length - 1];
+        const current = intervals[i];
+        
+        if (current[0] <= last[1]) {
+            // Overlapping - merge
+            last[1] = Math.max(last[1], current[1]);
+        } else {
+            // Non-overlapping - add new interval
+            result.push(current);
+        }
+    }
+    
+    return result;
+}</code></pre>
+                    <div class="code-explanation">
+                        <h4>Reasoning about overlaps</h4>
+                        <ul>
+                            <li>Sorting by start time guarantees that overlapping intervals appear consecutively.</li>
+                            <li><code>result</code> always stores disjoint intervals; comparing with <code>last</code> tells us whether to merge or append.</li>
+                            <li>Merging simply extends the end time to the maximum of the two intervals.</li>
+                            <li>If there is no overlap we push a new entry, preserving the chronological order.</li>
+                        </ul>
+                    </div>
+                    <div class="complexity">
+                        <strong>Time:</strong> O(n log n) | <strong>Space:</strong> O(n)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📚 Key Takeaways</h2>
+            <ul style="margin: 1rem 0; padding-left: 2rem; color: var(--text-secondary);">
+                <li>O(n²) algorithms: Bubble, Selection, Insertion - simple but slow</li>
+                <li>O(n log n) algorithms: Merge, Quick, Heap - efficient for large data</li>
+                <li>Quick sort is often fastest in practice despite O(n²) worst case</li>
+                <li>Merge sort guarantees O(n log n) but uses O(n) extra space</li>
+                <li>Consider stability requirement when choosing algorithm</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>Built with ❤️ by <a href="https://x.com/realimamabubakr" target="_blank">Imam Abubakar</a> | <a href="../index.html">Back to Home</a> | <a href="http://github.com/Imam-Abubakar/ultimate-dsa" target="_blank">GitHub</a></p>
+    </footer>
+
+    <script>
+        let sortArray = [];
+        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+        function generateNewArray() {
+            sortArray = Array.from({ length: 15 }, () => Math.floor(Math.random() * 200) + 20);
+            renderBars();
+            logOperation('Generated new random array');
+        }
+
+        function renderBars(comparing = [], sorted = []) {
+            const canvas = document.getElementById('sortCanvas');
+            canvas.innerHTML = '';
+            
+            sortArray.forEach((val, idx) => {
+                const bar = document.createElement('div');
+                bar.className = 'sort-bar';
+                bar.style.height = `${val}px`;
+                
+                if (comparing.includes(idx)) {
+                    bar.classList.add('comparing');
+                }
+                if (sorted.includes(idx)) {
+                    bar.classList.add('sorted');
+                }
+                
+                canvas.appendChild(bar);
+            });
+        }
+
+        function logOperation(message) {
+            const logContent = document.getElementById('logContent');
+            const timestamp = new Date().toLocaleTimeString();
+            logContent.innerHTML = `[${timestamp}] ${message}`;
+        }
+
+        async function visualizeBubbleSort() {
+            logOperation('Starting Bubble Sort...');
+            const n = sortArray.length;
+            
+            for (let i = 0; i < n - 1; i++) {
+                for (let j = 0; j < n - i - 1; j++) {
+                    renderBars([j, j + 1]);
+                    await delay(100);
+                    
+                    if (sortArray[j] > sortArray[j + 1]) {
+                        [sortArray[j], sortArray[j + 1]] = [sortArray[j + 1], sortArray[j]];
+                        renderBars([j, j + 1]);
+                        await delay(100);
+                    }
+                }
+            }
+            
+            renderBars([], Array.from({ length: n }, (_, i) => i));
+            logOperation('Bubble Sort completed! ✓');
+        }
+
+        async function visualizeQuickSort() {
+            logOperation('Starting Quick Sort...');
+            await quickSortHelper(0, sortArray.length - 1);
+            renderBars([], Array.from({ length: sortArray.length }, (_, i) => i));
+            logOperation('Quick Sort completed! ✓');
+        }
+
+        async function quickSortHelper(low, high) {
+            if (low < high) {
+                const pi = await partitionHelper(low, high);
+                await quickSortHelper(low, pi - 1);
+                await quickSortHelper(pi + 1, high);
+            }
+        }
+
+        async function partitionHelper(low, high) {
+            const pivot = sortArray[high];
+            let i = low - 1;
+            
+            for (let j = low; j < high; j++) {
+                renderBars([j, high]);
+                await delay(100);
+                
+                if (sortArray[j] < pivot) {
+                    i++;
+                    [sortArray[i], sortArray[j]] = [sortArray[j], sortArray[i]];
+                    renderBars([i, j]);
+                    await delay(100);
+                }
+            }
+            
+            [sortArray[i + 1], sortArray[high]] = [sortArray[high], sortArray[i + 1]];
+            renderBars([i + 1, high]);
+            await delay(100);
+            
+            return i + 1;
+        }
+
+        function toggleSolution(id) {
+            const solution = document.getElementById(id);
+            const button = event.target;
+            
+            if (solution.classList.contains('show')) {
+                solution.classList.remove('show');
+                button.textContent = 'Show Solution';
+            } else {
+                solution.classList.add('show');
+                button.textContent = 'Hide Solution';
+            }
+        }
+
+        // Initialize
+        generateNewArray();
+    </script>
+</body>
+</html>
+

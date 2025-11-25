@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arrays - Ultimate DSA</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="../index.html" class="back-link">← Back to Home</a>
+            <h1>📦 Arrays</h1>
+            <p>Master the most fundamental data structure</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Concept Explanation -->
+        <div class="card">
+            <h2>What is an Array?</h2>
+            <p>
+                An array is a collection of elements stored in contiguous memory locations. It's one of the most basic 
+                and widely used data structures in programming. Arrays allow you to store multiple values of the same 
+                type under a single variable name.
+            </p>
+            
+            <h3>Key Characteristics</h3>
+            <ul style="margin: 1rem 0; padding-left: 2rem; color: var(--text-secondary);">
+                <li><strong>Fixed or Dynamic Size:</strong> In JavaScript, arrays are dynamic and can grow/shrink</li>
+                <li><strong>Index-Based Access:</strong> Access elements in O(1) time using indices (0-based)</li>
+                <li><strong>Contiguous Memory:</strong> Elements stored sequentially in memory</li>
+                <li><strong>Homogeneous/Heterogeneous:</strong> JS arrays can store mixed types</li>
+            </ul>
+
+            <h3>Time Complexity</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                <div class="complexity">
+                    <strong>Access:</strong> O(1)
+                </div>
+                <div class="complexity">
+                    <strong>Search:</strong> O(n)
+                </div>
+                <div class="complexity">
+                    <strong>Insert:</strong> O(n)
+                </div>
+                <div class="complexity">
+                    <strong>Delete:</strong> O(n)
+                </div>
+            </div>
+
+            <h3>Common Operations</h3>
+            <pre><code>// Creating an array
+const arr = [1, 2, 3, 4, 5];
+
+// Accessing elements
+console.log(arr[0]); // 1
+
+// Modifying elements
+arr[0] = 10; // [10, 2, 3, 4, 5]
+
+// Adding elements
+arr.push(6);        // Add to end: [10, 2, 3, 4, 5, 6]
+arr.unshift(0);     // Add to start: [0, 10, 2, 3, 4, 5, 6]
+
+// Removing elements
+arr.pop();          // Remove from end
+arr.shift();        // Remove from start
+
+// Array methods
+arr.length;         // Get array length
+arr.slice(1, 3);    // Get subarray
+arr.splice(1, 2);   // Remove/insert elements
+arr.indexOf(3);     // Find element index
+arr.includes(5);    // Check if element exists</code></pre>
+            <div class="code-explanation">
+                <h4>How to interpret these snippets</h4>
+                <ul>
+                    <li>The first block shows the fundamental CRUD actions (create, read, update, delete) you use constantly.</li>
+                    <li><code>push</code>/<code>pop</code> mutate the tail, whereas <code>unshift</code>/<code>shift</code> work at the head and cost O(n).</li>
+                    <li>Slice/splice demonstrate non-destructive vs. destructive ways to carve out portions of an array.</li>
+                    <li>Helpers like <code>indexOf</code> and <code>includes</code> enable searches when you do not want to write loops manually.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Interactive Visualizer -->
+        <div class="card">
+            <h2>🎨 Interactive Array Visualizer</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                Create and manipulate arrays with real-time visualization
+            </p>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="addElement()">Add Element</button>
+                <button class="btn btn-primary" onclick="removeElement()">Remove Element</button>
+                <button class="btn btn-secondary" onclick="searchElement()">Search Element</button>
+                <button class="btn btn-secondary" onclick="reverseArray()">Reverse Array</button>
+                <button class="btn btn-secondary" onclick="resetArray()">Reset</button>
+            </div>
+
+            <div style="margin: 1rem 0;">
+                <input type="number" id="arrayInput" placeholder="Enter a number" style="width: 200px; display: inline-block;">
+            </div>
+
+            <div class="visualizer">
+                <div id="arrayCanvas" class="visualizer-canvas"></div>
+            </div>
+
+            <div id="operationLog" style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1rem; min-height: 60px;">
+                <strong style="color: var(--primary-color);">Operation Log:</strong>
+                <div id="logContent" style="color: var(--text-secondary); margin-top: 0.5rem;">
+                    Ready to perform operations...
+                </div>
+            </div>
+        </div>
+
+        <!-- LeetCode Style Problems -->
+        <div class="card">
+            <h2>💻 Practice Problems</h2>
+            
+            <!-- Problem 1: Two Sum -->
+            <div class="problem">
+                <h4>1. Two Sum <span class="difficulty easy">Easy</span></h4>
+                <p style="margin: 0.5rem 0;">
+                    Given an array of integers <code>nums</code> and an integer <code>target</code>, 
+                    return indices of the two numbers that add up to <code>target</code>.
+                </p>
+                <p style="margin: 0.5rem 0; font-size: 0.9rem; color: var(--text-secondary);">
+                    <strong>Example:</strong><br>
+                    Input: nums = [2, 7, 11, 15], target = 9<br>
+                    Output: [0, 1] (because nums[0] + nums[1] = 2 + 7 = 9)
+                </p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution1')">Show Solution</button>
+                
+                <div id="solution1" class="solution">
+                    <h4 style="color: var(--accent-color); margin-top: 1rem;">Solution:</h4>
+                    <pre><code>/**
+ * Two Sum - Using Hash Map for O(n) solution
+ * @param {number[]} nums - Array of integers
+ * @param {number} target - Target sum
+ * @return {number[]} - Indices of two numbers
+ */
+function twoSum(nums, target) {
+    // Create a hash map to store number and its index
+    const map = new Map();
+    
+    // Iterate through the array
+    for (let i = 0; i < nums.length; i++) {
+        // Calculate the complement (what we need to find)
+        const complement = target - nums[i];
+        
+        // If complement exists in map, we found the pair
+        if (map.has(complement)) {
+            return [map.get(complement), i];
+        }
+        
+        // Store current number and its index
+        map.set(nums[i], i);
+    }
+    
+    // No solution found
+    return [];
+}
+
+// Test the function
+console.log(twoSum([2, 7, 11, 15], 9)); // [0, 1]
+console.log(twoSum([3, 2, 4], 6));       // [1, 2]
+console.log(twoSum([3, 3], 6));          // [0, 1]</code></pre>
+                    
+                    <h4 style="color: var(--accent-color);">Explanation:</h4>
+                    <p style="color: var(--text-secondary);">
+                        1. We use a hash map to store each number and its index as we iterate<br>
+                        2. For each number, we calculate its complement (target - current number)<br>
+                        3. If the complement exists in our map, we've found the pair<br>
+                        4. Otherwise, we add the current number to the map and continue
+                    </p>
+                    
+                    <div class="complexity">
+                        <strong>Time Complexity:</strong> O(n) - Single pass through array
+                    </div>
+                    <div class="complexity">
+                        <strong>Space Complexity:</strong> O(n) - Hash map storage
+                    </div>
+                </div>
+            </div>
+
+            <!-- Problem 2: Maximum Subarray -->
+            <div class="problem">
+                <h4>2. Maximum Subarray (Kadane's Algorithm) <span class="difficulty medium">Medium</span></h4>
+                <p style="margin: 0.5rem 0;">
+                    Find the contiguous subarray with the largest sum within an array of integers.
+                </p>
+                <p style="margin: 0.5rem 0; font-size: 0.9rem; color: var(--text-secondary);">
+                    <strong>Example:</strong><br>
+                    Input: [-2, 1, -3, 4, -1, 2, 1, -5, 4]<br>
+                    Output: 6 (subarray [4, -1, 2, 1] has the largest sum)
+                </p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution2')">Show Solution</button>
+                
+                <div id="solution2" class="solution">
+                    <h4 style="color: var(--accent-color); margin-top: 1rem;">Solution:</h4>
+                    <pre><code>/**
+ * Maximum Subarray - Kadane's Algorithm
+ * @param {number[]} nums - Array of integers
+ * @return {number} - Maximum sum of contiguous subarray
+ */
+function maxSubArray(nums) {
+    // Initialize with first element
+    let maxSum = nums[0];
+    let currentSum = nums[0];
+    
+    // Iterate from second element
+    for (let i = 1; i < nums.length; i++) {
+        // Either extend existing subarray or start new one
+        currentSum = Math.max(nums[i], currentSum + nums[i]);
+        
+        // Update maximum sum if current is larger
+        maxSum = Math.max(maxSum, currentSum);
+    }
+    
+    return maxSum;
+}
+
+// Test the function
+console.log(maxSubArray([-2, 1, -3, 4, -1, 2, 1, -5, 4])); // 6
+console.log(maxSubArray([1]));                               // 1
+console.log(maxSubArray([5, 4, -1, 7, 8]));                 // 23</code></pre>
+                    
+                    <h4 style="color: var(--accent-color);">Explanation:</h4>
+                    <p style="color: var(--text-secondary);">
+                        Kadane's Algorithm is a dynamic programming approach:<br>
+                        1. Keep track of current sum and maximum sum<br>
+                        2. At each position, decide: extend current subarray or start new one<br>
+                        3. If adding current element to existing sum is worse than the element alone, start fresh<br>
+                        4. Update maximum sum whenever current sum is larger
+                    </p>
+                    
+                    <div class="complexity">
+                        <strong>Time Complexity:</strong> O(n) - Single pass
+                    </div>
+                    <div class="complexity">
+                        <strong>Space Complexity:</strong> O(1) - Constant space
+                    </div>
+                </div>
+            </div>
+
+            <!-- Problem 3: Rotate Array -->
+            <div class="problem">
+                <h4>3. Rotate Array <span class="difficulty medium">Medium</span></h4>
+                <p style="margin: 0.5rem 0;">
+                    Rotate an array to the right by k steps, where k is non-negative.
+                </p>
+                <p style="margin: 0.5rem 0; font-size: 0.9rem; color: var(--text-secondary);">
+                    <strong>Example:</strong><br>
+                    Input: nums = [1, 2, 3, 4, 5, 6, 7], k = 3<br>
+                    Output: [5, 6, 7, 1, 2, 3, 4]
+                </p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution3')">Show Solution</button>
+                
+                <div id="solution3" class="solution">
+                    <h4 style="color: var(--accent-color); margin-top: 1rem;">Solution:</h4>
+                    <pre><code>/**
+ * Rotate Array - Using Reversal Algorithm
+ * @param {number[]} nums - Array to rotate
+ * @param {number} k - Number of steps to rotate
+ */
+function rotate(nums, k) {
+    k = k % nums.length; // Handle k > array length
+    
+    // Helper function to reverse array portion
+    function reverse(arr, start, end) {
+        while (start < end) {
+            [arr[start], arr[end]] = [arr[end], arr[start]];
+            start++;
+            end--;
+        }
+    }
+    
+    // Three reversals to achieve rotation:
+    // 1. Reverse entire array
+    reverse(nums, 0, nums.length - 1);
+    // 2. Reverse first k elements
+    reverse(nums, 0, k - 1);
+    // 3. Reverse remaining elements
+    reverse(nums, k, nums.length - 1);
+    
+    return nums;
+}
+
+// Test the function
+console.log(rotate([1, 2, 3, 4, 5, 6, 7], 3)); // [5, 6, 7, 1, 2, 3, 4]
+console.log(rotate([-1, -100, 3, 99], 2));      // [3, 99, -1, -100]</code></pre>
+                    
+                    <h4 style="color: var(--accent-color);">Explanation:</h4>
+                    <p style="color: var(--text-secondary);">
+                        The reversal algorithm is clever and efficient:<br>
+                        1. First reverse the entire array<br>
+                        2. Then reverse the first k elements<br>
+                        3. Finally reverse the remaining n-k elements<br>
+                        This achieves rotation with O(1) extra space!
+                    </p>
+                    
+                    <div class="complexity">
+                        <strong>Time Complexity:</strong> O(n) - Each reversal is O(n)
+                    </div>
+                    <div class="complexity">
+                        <strong>Space Complexity:</strong> O(1) - In-place rotation
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Resources -->
+        <div class="card">
+            <h2>📚 Key Takeaways</h2>
+            <ul style="margin: 1rem 0; padding-left: 2rem; color: var(--text-secondary);">
+                <li>Arrays provide O(1) access time but O(n) insertion/deletion (except at end)</li>
+                <li>Use hash maps with arrays for O(n) solutions to pair-finding problems</li>
+                <li>Kadane's algorithm is the go-to for maximum subarray problems</li>
+                <li>Two-pointer technique is powerful for array problems</li>
+                <li>Consider in-place algorithms to optimize space complexity</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>Built with ❤️ by <a href="https://x.com/realimamabubakr" target="_blank">Imam Abubakar</a> | <a href="../index.html">Back to Home</a> | <a href="http://github.com/Imam-Abubakar/ultimate-dsa" target="_blank">GitHub</a></p>
+    </footer>
+
+    <script>
+        // Array Visualizer Logic
+        let visualArray = [5, 2, 8, 1, 9, 3];
+        
+        function renderArray() {
+            const canvas = document.getElementById('arrayCanvas');
+            canvas.innerHTML = '';
+            
+            visualArray.forEach((value, index) => {
+                const item = document.createElement('div');
+                item.className = 'array-item animate-in';
+                item.textContent = value;
+                item.style.animationDelay = `${index * 0.1}s`;
+                item.title = `Index: ${index}, Value: ${value}`;
+                canvas.appendChild(item);
+            });
+        }
+        
+        function logOperation(message) {
+            const logContent = document.getElementById('logContent');
+            const timestamp = new Date().toLocaleTimeString();
+            logContent.innerHTML = `[${timestamp}] ${message}`;
+        }
+        
+        function addElement() {
+            const input = document.getElementById('arrayInput');
+            const value = parseInt(input.value) || Math.floor(Math.random() * 100);
+            visualArray.push(value);
+            renderArray();
+            logOperation(`Added element ${value} to array. New length: ${visualArray.length}`);
+            input.value = '';
+        }
+        
+        function removeElement() {
+            if (visualArray.length === 0) {
+                logOperation('Array is empty! Cannot remove elements.');
+                return;
+            }
+            const removed = visualArray.pop();
+            renderArray();
+            logOperation(`Removed element ${removed} from array. New length: ${visualArray.length}`);
+        }
+        
+        function searchElement() {
+            const input = document.getElementById('arrayInput');
+            const value = parseInt(input.value);
+            
+            if (isNaN(value)) {
+                logOperation('Please enter a valid number to search.');
+                return;
+            }
+            
+            const index = visualArray.indexOf(value);
+            if (index !== -1) {
+                // Highlight found element
+                const items = document.querySelectorAll('.array-item');
+                items[index].classList.add('active');
+                setTimeout(() => items[index].classList.remove('active'), 2000);
+                logOperation(`Found ${value} at index ${index}! ✓`);
+            } else {
+                logOperation(`Element ${value} not found in array. ✗`);
+            }
+            input.value = '';
+        }
+        
+        async function reverseArray() {
+            logOperation('Reversing array...');
+            
+            let left = 0;
+            let right = visualArray.length - 1;
+            
+            while (left < right) {
+                // Swap elements
+                [visualArray[left], visualArray[right]] = [visualArray[right], visualArray[left]];
+                renderArray();
+                
+                // Highlight swapped elements
+                const items = document.querySelectorAll('.array-item');
+                items[left].classList.add('comparing');
+                items[right].classList.add('comparing');
+                
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                items[left].classList.remove('comparing');
+                items[right].classList.remove('comparing');
+                
+                left++;
+                right--;
+            }
+            
+            logOperation('Array reversed successfully! ✓');
+        }
+        
+        function resetArray() {
+            visualArray = [5, 2, 8, 1, 9, 3];
+            renderArray();
+            logOperation('Array reset to initial state.');
+        }
+        
+        // Solution toggle function
+        function toggleSolution(id) {
+            const solution = document.getElementById(id);
+            const button = event.target;
+            
+            if (solution.classList.contains('show')) {
+                solution.classList.remove('show');
+                button.textContent = 'Show Solution';
+            } else {
+                solution.classList.add('show');
+                button.textContent = 'Hide Solution';
+            }
+        }
+        
+        // Initialize
+        renderArray();
+    </script>
+</body>
+</html>
+

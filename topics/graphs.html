@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graphs - Ultimate DSA</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="../index.html" class="back-link">← Back to Home</a>
+            <h1>🕸️ Graphs</h1>
+            <p>Modeling relationships and connections</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>What is a Graph?</h2>
+            <p>
+                A graph is a collection of nodes (vertices) connected by edges. Graphs can represent networks, 
+                relationships, paths, and many real-world structures.
+            </p>
+            
+            <h3>Graph Representations</h3>
+            <pre><code>// Adjacency List (most common)
+class Graph {
+    constructor() {
+        this.adjacencyList = {};
+    }
+    
+    addVertex(vertex) {
+        if (!this.adjacencyList[vertex]) {
+            this.adjacencyList[vertex] = [];
+        }
+    }
+    
+    addEdge(v1, v2) {
+        this.adjacencyList[v1].push(v2);
+        this.adjacencyList[v2].push(v1); // For undirected
+    }
+    
+    // Depth First Search
+    dfs(start) {
+        const result = [];
+        const visited = {};
+        
+        const dfsHelper = (vertex) => {
+            visited[vertex] = true;
+            result.push(vertex);
+            
+            for (let neighbor of this.adjacencyList[vertex]) {
+                if (!visited[neighbor]) {
+                    dfsHelper(neighbor);
+                }
+            }
+        };
+        
+        dfsHelper(start);
+        return result;
+    }
+    
+    // Breadth First Search
+    bfs(start) {
+        const queue = [start];
+        const result = [];
+        const visited = {};
+        visited[start] = true;
+        
+        while (queue.length) {
+            const vertex = queue.shift();
+            result.push(vertex);
+            
+            for (let neighbor of this.adjacencyList[vertex]) {
+                if (!visited[neighbor]) {
+                    visited[neighbor] = true;
+                    queue.push(neighbor);
+                }
+            }
+        }
+        
+        return result;
+    }
+}</code></pre>
+            <div class="code-explanation">
+                <h4>How to read this implementation</h4>
+                <ul>
+                    <li><strong>addVertex/addEdge</strong> build the adjacency list so every vertex keeps track of its neighbors.</li>
+                    <li><strong>dfs</strong> uses recursion and a visited map to walk as deep as possible before backtracking.</li>
+                    <li><strong>bfs</strong> uses a queue to explore level by level, marking nodes as visited to avoid repeats.</li>
+                    <li>Both traversals return the visitation order so you can see exactly how the search progresses.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>💻 Practice Problems</h2>
+            
+            <div class="problem">
+                <h4>1. Number of Islands <span class="difficulty medium">Medium</span></h4>
+                <p style="margin: 0.5rem 0;">
+                    Count the number of islands in a 2D grid (DFS/BFS application).
+                </p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution1')">Show Solution</button>
+                
+                <div id="solution1" class="solution">
+                    <pre><code>function numIslands(grid) {
+    if (!grid || grid.length === 0) return 0;
+    
+    let count = 0;
+    const rows = grid.length;
+    const cols = grid[0].length;
+    
+    function dfs(i, j) {
+        if (i < 0 || i >= rows || j < 0 || j >= cols || 
+            grid[i][j] === '0') {
+            return;
+        }
+        
+        grid[i][j] = '0'; // Mark as visited
+        
+        // Visit all 4 directions
+        dfs(i + 1, j);
+        dfs(i - 1, j);
+        dfs(i, j + 1);
+        dfs(i, j - 1);
+    }
+    
+    for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+            if (grid[i][j] === '1') {
+                count++;
+                dfs(i, j);
+            }
+        }
+    }
+    
+    return count;
+}</code></pre>
+                    <div class="code-explanation">
+                        <h4>Why this solution works</h4>
+                        <ul>
+                            <li>Every time we see a <code>1</code>, we start a DFS that "sinks" that island by flipping connected cells to <code>0</code>.</li>
+                            <li>Recursive calls explore all four directions so diagonal cells stay untouched, matching the problem constraints.</li>
+                            <li>Counting happens only when we initiate a DFS, guaranteeing each island increments the total exactly once.</li>
+                            <li>Mutating the grid doubles as a visited set, which keeps the space usage low.</li>
+                        </ul>
+                    </div>
+                    <div class="complexity">
+                        <strong>Time:</strong> O(m × n) | <strong>Space:</strong> O(m × n)
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem">
+                <h4>2. Course Schedule (Cycle Detection) <span class="difficulty medium">Medium</span></h4>
+                <p style="margin: 0.5rem 0;">
+                    Determine if you can finish all courses given prerequisites (detect cycle in directed graph).
+                </p>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution2')">Show Solution</button>
+                
+                <div id="solution2" class="solution">
+                    <pre><code>function canFinish(numCourses, prerequisites) {
+    const graph = Array.from({ length: numCourses }, () => []);
+    
+    // Build adjacency list
+    for (let [course, prereq] of prerequisites) {
+        graph[prereq].push(course);
+    }
+    
+    const visited = new Array(numCourses).fill(0);
+    // 0: unvisited, 1: visiting, 2: visited
+    
+    function hasCycle(course) {
+        if (visited[course] === 1) return true; // Cycle detected
+        if (visited[course] === 2) return false; // Already processed
+        
+        visited[course] = 1; // Mark as visiting
+        
+        for (let next of graph[course]) {
+            if (hasCycle(next)) return true;
+        }
+        
+        visited[course] = 2; // Mark as visited
+        return false;
+    }
+    
+    for (let i = 0; i < numCourses; i++) {
+        if (hasCycle(i)) return false;
+    }
+    
+    return true;
+}</code></pre>
+                    <div class="code-explanation">
+                        <h4>Reading the code</h4>
+                        <ul>
+                            <li>The adjacency list points from a prerequisite to the course that depends on it.</li>
+                            <li>The <code>visited</code> array uses three states (unvisited, visiting, visited) to detect back edges.</li>
+                            <li>If we ever re-enter a node that is currently "visiting", we discovered a cycle and must return false.</li>
+                            <li>Processing every node ensures disconnected components are also checked.</li>
+                        </ul>
+                    </div>
+                    <div class="complexity">
+                        <strong>Time:</strong> O(V + E) | <strong>Space:</strong> O(V + E)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📚 Key Takeaways</h2>
+            <ul style="margin: 1rem 0; padding-left: 2rem; color: var(--text-secondary);">
+                <li>DFS uses stack (recursion), BFS uses queue</li>
+                <li>Adjacency list is most space-efficient for sparse graphs</li>
+                <li>Graph algorithms solve connectivity, shortest path, cycle detection</li>
+                <li>Many real-world problems map to graph problems</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>Built with ❤️ by <a href="https://x.com/realimamabubakr" target="_blank">Imam Abubakar</a> | <a href="../index.html">Back to Home</a> | <a href="http://github.com/Imam-Abubakar/ultimate-dsa" target="_blank">GitHub</a></p>
+    </footer>
+
+    <script>
+        function toggleSolution(id) {
+            const solution = document.getElementById(id);
+            const button = event.target;
+            
+            if (solution.classList.contains('show')) {
+                solution.classList.remove('show');
+                button.textContent = 'Show Solution';
+            } else {
+                solution.classList.add('show');
+                button.textContent = 'Hide Solution';
+            }
+        }
+    </script>
+</body>
+</html>
+
