@@ -132,6 +132,7 @@ arr.includes(5);    // Check if element exists</code></pre>
                     Output: [0, 1] (because nums[0] + nums[1] = 2 + 7 = 9)
                 </p>
                 
+                <button class="btn btn-primary" onclick="openPlayground('problem1')">Solve Problem</button>
                 <button class="btn btn-secondary" onclick="toggleSolution('solution1')">Show Solution</button>
                 
                 <div id="solution1" class="solution">
@@ -198,6 +199,7 @@ console.log(twoSum([3, 3], 6));          // [0, 1]</code></pre>
                     Output: 6 (subarray [4, -1, 2, 1] has the largest sum)
                 </p>
                 
+                <button class="btn btn-primary" onclick="openPlayground('problem2')">Solve Problem</button>
                 <button class="btn btn-secondary" onclick="toggleSolution('solution2')">Show Solution</button>
                 
                 <div id="solution2" class="solution">
@@ -259,6 +261,7 @@ console.log(maxSubArray([5, 4, -1, 7, 8]));                 // 23</code></pre>
                     Output: [5, 6, 7, 1, 2, 3, 4]
                 </p>
                 
+                <button class="btn btn-primary" onclick="openPlayground('problem3')">Solve Problem</button>
                 <button class="btn btn-secondary" onclick="toggleSolution('solution3')">Show Solution</button>
                 
                 <div id="solution3" class="solution">
@@ -327,10 +330,58 @@ console.log(rotate([-1, -100, 3, 99], 2));      // [3, 99, -1, -100]</code></pre
         </div>
     </div>
 
+    <!-- Modal -->
+    <div id="playgroundModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h2 id="playgroundTitle">Coding Playground</h2>
+                    <p id="playgroundDescription" style="color: #a3a3a3; margin-top: 0.3rem;">Write your solution below
+                    </p>
+                </div>
+                <button class="close-btn" onclick="closePlayground()">✕</button>
+            </div>
+
+            <div class="playground-body">
+                <div class="editor-section">
+                    <div class="editor-header">
+                        <div class="language-selector">
+                            <button class="lang-btn active" data-lang="javascript"
+                                onclick="switchLanguage('javascript')">JavaScript</button>
+                            <button class="lang-btn" data-lang="python"
+                                onclick="switchLanguage('python')">Python</button>
+                            <button class="lang-btn" data-lang="java" onclick="switchLanguage('java')">Java</button>
+                            <button class="lang-btn" data-lang="cpp" onclick="switchLanguage('cpp')">C++</button>
+                        </div>
+                        <button class="btn-reset" onclick="resetCode()">Reset</button>
+                    </div>
+                    <div class="editor-wrapper">
+                        <textarea id="codeEditor" class="code-editor" spellcheck="false"></textarea>
+                    </div>
+                </div>
+
+                <div class="test-section">
+                    <div class="test-header">
+                        <span>Test Cases</span>
+                        <button id="runBtn" class="btn-run" onclick="runTests()">▶ Run Tests</button>
+                    </div>
+                    <div id="testResults" class="test-results">
+                        <div
+                            style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #a3a3a3;">
+                            <p>Run tests to see results</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <p>Built with ❤️ by <a href="https://x.com/realimamabubakr" target="_blank">Imam Abubakar</a> | <a href="../index.html">Back to Home</a> | <a href="http://github.com/Imam-Abubakar/ultimate-dsa" target="_blank">GitHub</a></p>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.3/full/pyodide.js"></script>
+    <script src="../js/playground/arrays.js"></script>
     <script>
         // Array Visualizer Logic
         let visualArray = [5, 2, 8, 1, 9, 3];
