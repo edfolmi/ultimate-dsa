@@ -1,7 +1,28 @@
+// arrays.js
 let pyodideReadyPromise = null;
 let pyodideInstance = null;
 let currentProblem = null;
 let currentLanguage = 'javascript';
+
+let editor = null;
+
+function initMonacoEditor() {
+    require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs' }});
+    require(['vs/editor/editor.main'], function () {
+        editor = monaco.editor.create(document.getElementById('codeEditor'), {
+            value: '', // We'll set the starter code dynamically
+            language: currentLanguage,
+            theme: 'vs-dark',
+            automaticLayout: true,
+            fontSize: 14,
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initMonacoEditor();
+});
+
 
 // Initialize Pyodide on first use
 async function initPyodide() {
@@ -104,8 +125,16 @@ function switchLanguage(lang) {
     });
 
     const problem = problemData[currentProblem][lang];
-    document.getElementById('codeEditor').value = problem.starter;
+    if (editor) {
+        editor.setValue(problem.starter);
+        let monacoLang = 'javascript';
+        if (lang === 'python') monacoLang = 'python';
+        else if (lang === 'java') monacoLang = 'java';
+        else if (lang === 'cpp') monacoLang = 'cpp';
+        monaco.editor.setModelLanguage(editor.getModel(), monacoLang);
+    }
 }
+
 
 function openPlayground(problemId) {
     currentProblem = problemId;
@@ -114,7 +143,11 @@ function openPlayground(problemId) {
 
     document.getElementById('playgroundTitle').textContent = problem.title;
     document.getElementById('playgroundDescription').textContent = problem.description;
-    document.getElementById('codeEditor').value = problem.javascript.starter;
+
+    if (editor) {
+        editor.setValue(problem.javascript.starter);
+        monaco.editor.setModelLanguage(editor.getModel(), 'javascript');
+    }
 
     document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.lang === 'javascript');
@@ -125,17 +158,19 @@ function openPlayground(problemId) {
     document.getElementById('playgroundModal').classList.add('show');
 }
 
+function resetCode() {
+    const problem = problemData[currentProblem][currentLanguage];
+    if (editor) editor.setValue(problem.starter);
+}
+
+
 function closePlayground() {
     document.getElementById('playgroundModal').classList.remove('show');
 }
 
-function resetCode() {
-    const problem = problemData[currentProblem][currentLanguage];
-    document.getElementById('codeEditor').value = problem.starter;
-}
 
 async function runPythonTests() {
-    const code = document.getElementById('codeEditor').value;
+    const code = editor.getValue();
     const problem = problemData[currentProblem][currentLanguage];
     const resultsDiv = document.getElementById('testResults');
 
@@ -231,7 +266,7 @@ result = ${currentProblem === 'problem1' ? 'two_sum' : 'max_sub_array'}(${JSON.s
 }
 
 async function runJavaScriptTests() {
-    const code = document.getElementById('codeEditor').value;
+    const code = editor.getValue();
     const problem = problemData[currentProblem][currentLanguage];
     const resultsDiv = document.getElementById('testResults');
 
