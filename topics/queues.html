@@ -327,6 +327,7 @@ class CircularQueue {
                     empty() - Return whether queue is empty
                 </p>
                 
+                <button class="btn btn-primary" onclick="openPlayground('problem1')">Solve Problem</button>
                 <button class="btn btn-secondary" onclick="toggleSolution('solution1')">Show Solution</button>
                 
                 <div id="solution1" class="solution">
@@ -428,6 +429,7 @@ console.log(queue.empty());     // false</code></pre>
                     <strong>Note:</strong> A circular queue uses a fixed-size array and wraps around when reaching the end.
                 </p>
                 
+                <button class="btn btn-primary" onclick="openPlayground('problem2')">Solve Problem</button>
                 <button class="btn btn-secondary" onclick="toggleSolution('solution2')">Show Solution</button>
                 
                 <div id="solution2" class="solution">
@@ -571,6 +573,7 @@ console.log(cQueue.enQueue(4));  // true</code></pre>
                     Output: [3,3,5,5,6,7]
                 </p>
                 
+                <button class="btn btn-primary" onclick="openPlayground('problem3')">Solve Problem</button>
                 <button class="btn btn-secondary" onclick="toggleSolution('solution3')">Show Solution</button>
                 
                 <div id="solution3" class="solution">
@@ -653,6 +656,52 @@ console.log(maxSlidingWindow([1,-1], 1));
             </ul>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div id="playgroundModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h2 id="playgroundTitle">Coding Playground</h2>
+                    <p id="playgroundDescription" style="color: #a3a3a3; margin-top: 0.3rem;">Write your solution below</p>
+                </div>
+                <button class="close-btn" onclick="closePlayground()">✕</button>
+            </div>
+            
+            <div class="playground-body">
+                <div class="editor-section">
+                    <div class="editor-header">
+                        <div class="language-selector">
+                            <button class="lang-btn active" data-lang="javascript" onclick="switchLanguage('javascript')">JavaScript</button>
+                            <button class="lang-btn" data-lang="python" onclick="switchLanguage('python')">Python</button>
+                            <button class="lang-btn" data-lang="java" onclick="switchLanguage('java')">Java</button>
+                            <button class="lang-btn" data-lang="cpp" onclick="switchLanguage('cpp')">C++</button>
+                        </div>
+                        <button class="btn-reset" onclick="resetCode()">Reset</button>
+                    </div>
+                    <div class="editor-wrapper">
+                        <div id="codeEditor" class="code-editor" style="height: 400px;"></div>
+                    </div>
+                </div>
+                
+                <div class="test-section">
+                    <div class="test-header">
+                        <span>Test Cases</span>
+                        <button id="runBtn" class="btn-run" onclick="runTests()">▶ Run Tests</button>
+                    </div>
+                    <div id="testResults" class="test-results">
+                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #a3a3a3;">
+                            <p>Run tests to see results</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs/loader.js"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.3/full/pyodide.js"></script>
+    <script src="../js/playground/queues.js"></script>
 
     <footer>
         <p>Built with ❤️ by <a href="https://x.com/realimamabubakr" target="_blank">Imam Abubakar</a> | <a href="../index.html">Back to Home</a> | <a href="http://github.com/Imam-Abubakar/ultimate-dsa" target="_blank">GitHub</a></p>
