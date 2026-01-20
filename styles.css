@@ -487,7 +487,6 @@ textarea:focus {
     display: flex;
     flex-direction: column;
     border: 1px solid #2e2e2e;
-    overflow: hidden;
 }
 
 .modal-header {
@@ -519,7 +518,6 @@ textarea:focus {
     display: grid;
     grid-template-columns: 1fr 1fr;
     height: calc(90vh - 120px);
-    overflow: hidden;
 }
 
 .editor-section {
@@ -613,10 +611,16 @@ textarea:focus {
     outline: none;
 }
 
+#playgroundModal {
+   height: 700px;
+   overflow-y: auto;
+   padding: 0.5rem;
+}
+
 .test-results {
-    flex: 1;
-    padding: 1.5rem;
+    height: 400px;
     overflow-y: auto;
+    padding: 0.5rem;
 }
 
 .spinner {
@@ -693,14 +697,14 @@ textarea:focus {
 }
 
 .test-case-body {
-    padding: 1rem;
+    padding: 0.5rem;
     font-size: 0.9rem;
     color: #a3a3a3;
     font-family: monospace;
 }
 
 .test-case-body>div {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.2rem;
 }
 
 ::-webkit-scrollbar {
@@ -724,14 +728,31 @@ textarea:focus {
 @media (max-width: 1024px) {
     .playground-body {
         grid-template-columns: 1fr;
-        grid-template-rows: 1fr 1fr;
+        grid-template-rows: auto auto;
     }
 
     .editor-section {
         border-right: none;
         border-bottom: 1px solid #2e2e2e;
     }
+
+    #playgroundModal {
+        max-height: none;
+        height: auto;
+        padding: 0rem;
+        margin: 0rem;
+        overflow-x: hidden;
+    }
+
+    .test-results {
+        max-height: none;
+        height: auto;
+        padding: 0rem;
+        margin: 0rem;
+        overflow-x: hidden;
+    }
 }
+
 
 /* Footer */
 footer {
